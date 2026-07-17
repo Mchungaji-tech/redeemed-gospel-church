@@ -1,0 +1,48 @@
+{
+    "church_name": "RGC Eldoret",
+    "tagline": "A sanctuary built for Christ's glory and the salvation of souls. Join us in worship and fellowship.",
+    "service_times": [
+        {
+            "day": "Sunday Service",
+            "time": "9:00 AM"
+        },
+        {
+            "day": "Wednesday Bible Study",
+            "time": "6:00 PM"
+        },
+        {
+            "day": "Friday Prayer",
+            "time": "7:00 PM"
+        }
+    ],
+    "quick_links": [
+        {
+            "text": "About Us",
+            "url": "about.php"
+        },
+        {
+            "text": "Ministries",
+            "url": "ministries.php"
+        },
+        {
+            "text": "Events",
+            "url": "events.php"
+        },
+        {
+            "text": "Sermons",
+            "url": "sermons.php"
+        },
+        {
+            "text": "Prayer Request",
+            "url": "contact.php"
+        }
+    ],
+    "contact": {
+        "address": "Eldoret, Kenya",
+        "email": "redeemedgospelchurch.eldoret@gmail.com",
+        "phone": "+254 700 000 000",
+        "whatsapp": "0729222999"
+    },
+    "designer_credit": "Designed by TekTrend",
+    "copyright_year": "2025"
+}

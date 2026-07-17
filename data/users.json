@@ -1,0 +1,14 @@
+[
+    {
+        "username": "owner",
+        "name": "Super Admin",
+        "role": "super_admin",
+        "password_hash": "$2y$10$pPT7V3rgv3owAjDEl8eOKukRCRE6qp21PjRTFVV56DFMJyZsdq652"
+    },
+    {
+        "username": "admin1",
+        "name": "Church Admin",
+        "role": "admin",
+        "password_hash": "$2y$10$c/Z2BTg8GLz7iS6CKBp78.x7sFiwjBm4HzzEAYNhFMUdqjpWEwFoy"
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "title": "Sunday Worship Service",
+        "description": "Word, worship, and prayer. Join us for an inspiring morning of praise, worship, and the preaching of God's Word.",
+        "location": "Main Sanctuary, Eldoret",
+        "poster": "https://images.unsplash.com/photo-1515162305285-0293e4767cc2?q=80&w=1200&auto=format&fit=crop",
+        "event_at": "2026-03-22 09:00:00"
+    },
+    {
+        "id": 2,
+        "title": "Midweek Prayer Meeting",
+        "description": "Come together for corporate prayer and intercession.Prayer changes things!",
+        "location": "Main Sanctuary, Eldoret",
+        "poster": "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?q=80&w=1200&auto=format&fit=crop",
+        "event_at": "2026-03-25 18:00:00"
+    },
+    {
+        "id": 3,
+        "title": "Youth Revival Night",
+        "description": "Praise, prayer, and discipleship for young people. An evening of worship, word, and fellowship for the youth.",
+        "location": "RGC Youth Hall",
+        "poster": "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=1200&auto=format&fit=crop",
+        "event_at": "2026-03-29 18:00:00"
+    }
+]

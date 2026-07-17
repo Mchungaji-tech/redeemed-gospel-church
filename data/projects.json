@@ -1,0 +1,46 @@
+[
+    {
+        "id": 1,
+        "title": "Community Food Support",
+        "description": "Monthly support to vulnerable families in Eldoret and surrounding areas. We provide food packages to those in need.",
+        "icon": "food",
+        "image": "",
+        "image2": "",
+        "status": "active",
+        "goal": "",
+        "featured": true
+    },
+    {
+        "id": 2,
+        "title": "Church Building Project",
+        "description": "Building a new sanctuary to accommodate our growing congregation. The project includes a main hall, Sunday school rooms, and fellowship area.",
+        "icon": "building",
+        "image": "",
+        "image2": "",
+        "status": "ongoing",
+        "goal": "50,000,000",
+        "featured": true
+    },
+    {
+        "id": 3,
+        "title": "Leadership Training",
+        "description": "Raising workers for ministry through our biblical training programs. We equip leaders for churches across the region.",
+        "icon": "graduation",
+        "image": "",
+        "image2": "",
+        "status": "active",
+        "goal": "",
+        "featured": false
+    },
+    {
+        "id": 4,
+        "title": "Youth Empowerment",
+        "description": "Empowering young people with skills and spiritual foundation for a brighter future.",
+        "icon": "users",
+        "image": "",
+        "image2": "",
+        "status": "active",
+        "goal": "",
+        "featured": false
+    }
+]

@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "name": "Worship Ministry",
+        "description": "Leading the church in praise and worship. We exist to create an atmosphere for people to encounter God's presence.",
+        "icon": "music",
+        "color": "brand",
+        "featured": true
+    },
+    {
+        "id": 2,
+        "name": "Youth Ministry",
+        "description": "Equipping young people with truth and purpose. We disciple the next generation to become leaders in the church.",
+        "icon": "users",
+        "color": "purple",
+        "featured": true
+    },
+    {
+        "id": 3,
+        "name": "Evangelism Ministry",
+        "description": "Taking the Gospel to communities and nations. We organize crusades and outreach programs to win souls for Christ.",
+        "icon": "share",
+        "color": "green",
+        "featured": true
+    },
+    {
+        "id": 4,
+        "name": "Men's Ministry",
+        "description": "Equipping men for leadership in the home, church, and community. Building strong fathers and leaders.",
+        "icon": "user",
+        "color": "blue",
+        "featured": false
+    },
+    {
+        "id": 5,
+        "name": "Women's Ministry",
+        "description": "Empowering women to fulfill their God-given potential. Building a sisterhood of faith and service.",
+        "icon": "heart",
+        "color": "pink",
+        "featured": false
+    },
+    {
+        "id": 6,
+        "name": "Children's Ministry",
+        "description": "Nurturing children in the ways of the Lord. We teach them to love God and His Word from a young age.",
+        "icon": "home",
+        "color": "yellow",
+        "featured": true
+    }
+]

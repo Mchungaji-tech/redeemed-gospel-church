@@ -1,0 +1,41 @@
+[
+    {
+        "id": 1,
+        "title": "Experience God's Love In Eldoret",
+        "subtitle": "Welcome to RGC Eldoret",
+        "subtitle_icon": "pulse",
+        "description": "We are a community of believers dedicated to spreading the Gospel of Jesus Christ and making a difference in our city and beyond.",
+        "button1_text": "Send Prayer Request",
+        "button1_link": "/rgc/contact.php",
+        "button2_text": "Watch Sermons",
+        "button2_link": "/rgc/sermons.php",
+        "background_style": "brand",
+        "order": 1
+    },
+    {
+        "id": 2,
+        "title": "A Church Built for Christ's Glory",
+        "subtitle": "Since 1995",
+        "subtitle_icon": "building",
+        "description": "A beacon of spiritual influence in Eldoret, Kenya - growing through evangelistic crusades and the power of the Gospel.",
+        "button1_text": "Learn Our History",
+        "button1_link": "/rgc/about.php",
+        "button2_text": "Our Ministries",
+        "button2_link": "/rgc/ministries.php",
+        "background_style": "slate",
+        "order": 2
+    },
+    {
+        "id": 3,
+        "title": "Join Us This Sunday",
+        "subtitle": "Worship With Us",
+        "subtitle_icon": "users",
+        "description": "Experience authentic worship, relevant preaching, and a welcoming community. All are welcome!",
+        "button1_text": "Plan Your Visit",
+        "button1_link": "/rgc/contact.php",
+        "button2_text": "View Events",
+        "button2_link": "/rgc/events.php",
+        "background_style": "gradient",
+        "order": 3
+    }
+]
