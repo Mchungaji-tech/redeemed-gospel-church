@@ -199,11 +199,13 @@ require __DIR__ . '/includes/header.php';
     <div class="sanctuary-stage__grid">
       <div class="sanctuary-copy text-center md:text-left">
         <span class="sanctuary-kicker">Not Just A Church Service</span>
-        <h1 class="sanctuary-copy__title text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">Step into a living story of worship, healing, and belonging.</h1>
-        <p class="sanctuary-copy__lead text-lg md:text-xl max-w-3xl mx-auto md:mx-0"><?php echo htmlspecialchars($footerData['church']['mission'] ?? 'Join our community of faith as we seek to worship God, grow in His grace, and serve the people of Eldoret and beyond.'); ?></p>
+        <h1 class="sanctuary-copy__title sanctuary-copy__title--desktop text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">Step into a living story of worship, healing, and belonging.</h1>
+        <h1 class="sanctuary-copy__title sanctuary-copy__title--mobile text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">Worship, prayer, and belonging.</h1>
+        <p class="sanctuary-copy__lead sanctuary-copy__lead--desktop text-lg md:text-xl max-w-3xl mx-auto md:mx-0"><?php echo htmlspecialchars($footerData['church']['mission'] ?? 'Join our community of faith as we seek to worship God, grow in His grace, and serve the people of Eldoret and beyond.'); ?></p>
+        <p class="sanctuary-copy__lead sanctuary-copy__lead--mobile text-lg md:text-xl max-w-3xl mx-auto md:mx-0">Find a Christ-centered church home in Eldoret with clear teaching, warm worship, and real community.</p>
         <div class="sanctuary-copy__actions justify-center md:justify-start">
           <a href="<?php echo rgcUrl('contact.php'); ?>" class="btn btn-primary">Plan Your Visit</a>
-          <a href="<?php echo rgcUrl('sermons.php'); ?>" class="btn btn-outline">Experience A Message</a>
+          <a href="<?php echo rgcUrl('sermons.php'); ?>" class="btn btn-outline homepage-mobile-secondary">Experience A Message</a>
         </div>
         <div class="sanctuary-copy__meta grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
           <div>
@@ -214,12 +216,12 @@ require __DIR__ . '/includes/header.php';
             <span>Location</span>
             <strong><?php echo htmlspecialchars($footerData['contact']['address'] ?? 'Eldoret, Kenya'); ?></strong>
           </div>
-          <div>
+          <div class="homepage-mobile-secondary">
             <span>Atmosphere</span>
             <strong>Warm worship. Real prayer.</strong>
           </div>
           <?php if ($nextEvent): ?>
-          <div>
+          <div class="homepage-mobile-secondary">
             <span>Next Gathering</span>
             <strong><?php echo htmlspecialchars($nextEvent['title'] ?? 'Upcoming Event'); ?></strong>
             <p class="text-[0.7rem] mt-1 text-brand-200 font-mono" data-event-at="<?php echo htmlspecialchars((string) ($nextEvent['event_at'] ?? '')); ?>"></p>
@@ -228,7 +230,7 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
 
-      <div class="sanctuary-orbit">
+      <div class="sanctuary-orbit homepage-mobile-secondary">
         <div class="sanctuary-feature relative overflow-hidden h-full group">
           <div class="hero-slider-progress" aria-hidden="true">
             <span id="heroSliderProgressBar" class="hero-slider-progress__bar"></span>
@@ -308,7 +310,7 @@ require __DIR__ . '/includes/header.php';
       </div>
     </div>
 
-    <div class="sanctuary-path grid-cols-1 md:grid-cols-3 gap-4 mt-12">
+    <div class="sanctuary-path homepage-mobile-secondary grid-cols-1 md:grid-cols-3 gap-4 mt-12">
       <a href="<?php echo rgcUrl('about.php'); ?>" class="sanctuary-path__item">
         <span>01</span>
         <strong>Meet The Heart</strong>
@@ -328,7 +330,7 @@ require __DIR__ . '/includes/header.php';
   </div>
 </section>
 
-<section class="section-padding pt-0">
+<section class="section-padding pt-0 homepage-mobile-secondary">
   <div class="max-w-[1280px] mx-auto px-4">
     <article class="story-card story-card--arrival p-12 md:p-20 rounded-[3rem] bg-white shadow-2xl border border-slate-100 text-center max-w-5xl mx-auto">
       <span class="story-card__eyebrow">The Experience</span>
@@ -352,7 +354,7 @@ require __DIR__ . '/includes/header.php';
   </div>
 </section>
 
-<section class="section-padding bg-slate-50">
+<section class="section-padding bg-slate-50 homepage-mobile-secondary">
   <div class="max-w-[1280px] mx-auto px-4">
     <article class="p-12 md:p-20 rounded-[3rem] bg-white shadow-xl border border-slate-200/60">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
@@ -383,7 +385,7 @@ require __DIR__ . '/includes/header.php';
   </div>
 </section>
 
-<section class="section-padding bg-brand-900 overflow-hidden">
+<section class="section-padding bg-brand-900 overflow-hidden homepage-mobile-secondary">
   <div class="max-w-[1280px] mx-auto px-4 relative">
     <div class="absolute top-0 right-0 w-96 h-96 bg-brand-500/10 rounded-full blur-[120px] -mr-48 -mt-48"></div>
     <article class="max-w-5xl">
@@ -449,7 +451,7 @@ require __DIR__ . '/includes/header.php';
         </div>
       </a>
 
-      <div class="sermon-showcase__stack">
+      <div class="sermon-showcase__stack homepage-mobile-secondary">
         <?php foreach ($secondarySermons as $sermon): ?>
         <?php
           $sermonDate = (string) ($sermon['scheduled_at'] ?? $sermon['created_at'] ?? '');
@@ -516,7 +518,7 @@ require __DIR__ . '/includes/header.php';
 <section class="section-padding pt-0">
   <div class="max-w-[1280px] mx-auto px-4">
     <div class="mosaic-wall grid-cols-1 md:grid-cols-2 gap-6">
-      <article class="mosaic-wall__intro p-8 rounded-3xl bg-white shadow-lg border border-slate-100">
+      <article class="mosaic-wall__intro homepage-mobile-secondary p-8 rounded-3xl bg-white shadow-lg border border-slate-100">
         <span class="story-card__eyebrow">Church Pulse</span>
         <h2 class="text-3xl md:text-4xl font-display font-bold mt-3 leading-tight">Belong in community. Serve with purpose. Carry hope into the city.</h2>
         <p class="text-lg text-slate-600 mt-4 leading-relaxed">Instead of treating church like a weekly appointment, we see it as a living rhythm of worship, formation, outreach, and practical love.</p>
@@ -532,8 +534,8 @@ require __DIR__ . '/includes/header.php';
             <a href="<?php echo rgcUrl('ministries.php'); ?>" class="home-panel__link">Explore</a>
           </div>
           <div class="mosaic-mini-list">
-            <?php foreach ($homeMinistries as $ministry): ?>
-            <article class="mosaic-mini-list__item">
+            <?php foreach ($homeMinistries as $index => $ministry): ?>
+            <article class="mosaic-mini-list__item <?php echo $index > 1 ? 'homepage-mobile-secondary' : ''; ?>">
               <strong><?php echo htmlspecialchars($ministry['name'] ?? 'Ministry'); ?></strong>
               <p><?php echo htmlspecialchars($ministry['description'] ?? ''); ?></p>
             </article>
@@ -541,7 +543,7 @@ require __DIR__ . '/includes/header.php';
           </div>
         </article>
 
-        <article class="mosaic-panel mosaic-panel--accent">
+        <article class="mosaic-panel mosaic-panel--accent homepage-mobile-secondary">
           <div class="pulse-card__header">
             <div>
               <span class="story-card__eyebrow">Impact</span>
@@ -565,7 +567,7 @@ require __DIR__ . '/includes/header.php';
 </section>
 
 <?php if (!empty($homeTestimonials)): ?>
-<section class="section-padding pt-0">
+<section class="section-padding pt-0 homepage-mobile-secondary">
   <div class="max-w-[1280px] mx-auto px-4">
     <div class="echo-strip grid-cols-1 md:grid-cols-2 gap-6">
       <div class="echo-strip__intro p-8 rounded-3xl bg-white shadow-lg border border-slate-100">
@@ -1054,7 +1056,7 @@ tickCountdowns();
 </script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
-<section class="section-padding bg-slate-50">
+<section class="section-padding bg-slate-50 homepage-mobile-secondary">
   <div class="max-w-[1280px] mx-auto px-4">
     <div class="text-center max-w-3xl mx-auto mb-20">
       <span class="story-card__eyebrow">Our Atmosphere</span>
