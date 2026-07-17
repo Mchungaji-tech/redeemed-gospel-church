@@ -165,25 +165,31 @@ $secondarySermons = array_slice($featuredSermons, 1, 2);
 require __DIR__ . '/includes/header.php';
 ?>
 
-<div id="chatDock" style="position:fixed;bottom:20px;right:20px;z-index:100000;display:flex;flex-direction:column;align-items:flex-end;">
-  <button id="chatOpen" style="display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:9999px;border:1px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.18);backdrop-filter:blur(10px);color:#fff;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25)">
-    <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+<div id="chatDock" class="chat-dock">
+  <button id="chatOpen" type="button" class="chat-trigger" aria-controls="chatPanel" aria-expanded="false">
+    <svg class="chat-trigger__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
     <span>Chat</span>
   </button>
-  <form id="chatPanel" method="post" action="<?php echo rgcUrl('chat.php'); ?>" style="display:none;margin-bottom:10px;width:320px;max-width:calc(100vw - 40px);border-radius:16px;border:1px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);box-shadow:0 16px 40px rgba(0,0,0,.25);padding:14px;order:-1;">
+  <form id="chatPanel" method="post" action="<?php echo rgcUrl('chat.php'); ?>" class="chat-panel" hidden>
     <?php echo rgcCsrfField('public_chat'); ?>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-      <p style="color:#0f172a;font-weight:700;">Chat with us</p>
-      <button id="chatClose" type="button" style="border:0;background:transparent;color:#334155;font-size:18px;line-height:1;">&times;</button>
+    <div class="chat-panel__header">
+      <p class="chat-panel__title">Chat with us</p>
+      <button id="chatClose" type="button" class="chat-close" aria-label="Close chat">&times;</button>
     </div>
     <?php if (!rgcPublicUser()): ?>
       <input name="name" autocomplete="name" class="form-input mb-2" placeholder="Your name">
       <input name="email" type="email" autocomplete="email" autocomplete="email" class="form-input mb-2" placeholder="Email (optional)">
     <?php endif; ?>
     <textarea name="message" class="form-input form-textarea mb-2" placeholder="Type your message..." required></textarea>
-    <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div class="chat-panel__actions">
       <button class="px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-800">Send</button>
-      <a id="chatWaLink" class="text-sm text-indigo-700" target="_blank" href="https://wa.me/254<?php echo preg_replace('/^0/', '', $footerData['contact']['whatsapp'] ?? '729222999'); ?>">WhatsApp</a>
+      <a
+        id="chatWaLink"
+        class="chat-link"
+        target="_blank"
+        href="https://wa.me/254<?php echo preg_replace('/^0/', '', $footerData['contact']['whatsapp'] ?? '729222999'); ?>"
+        data-whatsapp-number="254<?php echo preg_replace('/^0/', '', $footerData['contact']['whatsapp'] ?? '729222999'); ?>"
+      >WhatsApp</a>
     </div>
   </form>
 </div>
@@ -1016,12 +1022,28 @@ tickCountdowns();
   const panel = document.getElementById('chatPanel');
   const msg = panel ? panel.querySelector('textarea[name="message"]') : null;
   const wa = document.getElementById('chatWaLink');
-  function showPanel(show) { panel.style.display = show ? 'block' : 'none'; }
-  if (openBtn && panel) openBtn.addEventListener('click', () => showPanel(panel.style.display !== 'block'));
+  function showPanel(show) {
+    if (!panel || !openBtn) return;
+    panel.hidden = !show;
+    openBtn.setAttribute('aria-expanded', show ? 'true' : 'false');
+    if (show && msg) msg.focus();
+  }
+  if (openBtn && panel) openBtn.addEventListener('click', () => showPanel(panel.hidden));
   if (closeBtn && panel) closeBtn.addEventListener('click', () => showPanel(false));
-  function updateWa() { const text = encodeURIComponent(msg ? (msg.value || '') : ''); wa.href = 'https://wa.me/?text=' + text; }
+  function updateWa() {
+    if (!wa) return;
+    const number = wa.dataset.whatsappNumber || '';
+    const text = encodeURIComponent(msg ? (msg.value || '') : '');
+    wa.href = number !== '' ? ('https://wa.me/' + number + '?text=' + text) : ('https://wa.me/?text=' + text);
+  }
   if (msg && wa) { msg.addEventListener('input', updateWa); updateWa(); }
   const params = new URLSearchParams(window.location.search);
+  if (params.get('chat') === 'offline') {
+    const toast = document.createElement('div');
+    toast.style.position='fixed';toast.style.bottom='24px';toast.style.left='50%';toast.style.transform='translateX(-50%)';
+    toast.style.background='#b91c1c';toast.style.color='#fff';toast.style.padding='8px 16px';toast.style.borderRadius='10px';toast.style.boxShadow='0 8px 24px rgba(0,0,0,.25)';
+    toast.textContent='Chat is temporarily unavailable. Please use WhatsApp.';document.body.appendChild(toast);setTimeout(()=>toast.remove(),3500);
+  }
   if (params.get('chat') === 'sent') {
     const toast = document.createElement('div');
     toast.style.position='fixed';toast.style.bottom='24px';toast.style.left='50%';toast.style.transform='translateX(-50%)';

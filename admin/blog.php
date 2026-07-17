@@ -226,7 +226,7 @@ $baseUrl = rgcUrl('admin/blog.php');
           </div>
           <div>
             <label class="text-sm font-medium text-slate-700">Banner Image</label>
-            <input type="file" name="banner_file" accept="image/jpeg,image/png,image/webp,image/gif" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white">
+            <input type="file" name="banner_file" accept="image/jpeg,image/png,image/webp,image/gif" class="mt-1 block w-full cursor-pointer rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:border-slate-400 hover:bg-white hover:file:bg-slate-800">
             <p class="text-xs text-slate-500 mt-1">Optional. JPG, PNG, WEBP, or GIF up to 5MB.</p>
           </div>
           <div>

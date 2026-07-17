@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div>
           <label class="text-sm font-medium">Poster Image</label>
-          <input name="poster" type="file" accept="image/*" class="mt-1 w-full border rounded px-3 py-2 bg-white">
+          <input name="poster" type="file" accept="image/*" class="mt-1 block w-full cursor-pointer rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:border-slate-400 hover:bg-white hover:file:bg-slate-800">
           <input name="existing_poster" type="hidden" value="">
         </div>
         <div>

@@ -282,7 +282,7 @@ foreach ($testimonials as $row) {
           <label class="block text-sm font-medium text-slate-700">Quoted by</label>
           <input name="bishop_author" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-300" value="<?php echo htmlspecialchars($bishopAuthor); ?>" placeholder="Bishop">
           <label class="block text-sm font-medium text-slate-700">Bishop Image Upload</label>
-          <input name="bishop_image_file" type="file" accept="image/*" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 bg-white">
+          <input name="bishop_image_file" type="file" accept="image/*" class="w-full cursor-pointer rounded-2xl border border-dashed border-slate-300 bg-white px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:border-slate-400 hover:file:bg-slate-800">
           <?php if ($bishopImage !== ''): ?>
           <div class="flex items-center gap-3 rounded-lg border border-slate-200 p-3 bg-white">
             <img src="<?php echo htmlspecialchars($bishopImage); ?>" alt="Current Bishop image" class="w-20 h-20 rounded-lg object-cover border">
@@ -381,7 +381,7 @@ foreach ($testimonials as $row) {
           <?php echo rgcCsrfField('admin_content'); ?>
           <input type="hidden" name="type" value="gallery">
           <input type="hidden" name="action" value="add">
-          <input name="image_file" type="file" accept="image/*" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 bg-white" required>
+          <input name="image_file" type="file" accept="image/*" class="w-full cursor-pointer rounded-2xl border border-dashed border-slate-300 bg-white px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:border-slate-400 hover:file:bg-slate-800" required>
           <input name="caption" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-300" placeholder="Caption">
           <button class="px-4 py-2 rounded-lg bg-slate-900 text-white text-sm">Add Image</button>
         </form>
@@ -394,7 +394,7 @@ foreach ($testimonials as $row) {
             <input type="hidden" name="id" value="<?php echo (int)($g['id'] ?? 0); ?>">
             <div class="flex items-center gap-3">
               <img src="<?php echo htmlspecialchars($g['image'] ?? ''); ?>" alt="Gallery image" class="w-14 h-14 rounded-lg object-cover border">
-              <input name="image_file" type="file" accept="image/*" class="flex-1 text-sm border border-slate-300 rounded-lg px-3 py-2 bg-white">
+              <input name="image_file" type="file" accept="image/*" class="flex-1 cursor-pointer rounded-2xl border border-dashed border-slate-300 bg-white px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:border-slate-400 hover:file:bg-slate-800">
             </div>
             <input name="caption" value="<?php echo htmlspecialchars($g['caption'] ?? ''); ?>" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
             <div class="flex gap-2">

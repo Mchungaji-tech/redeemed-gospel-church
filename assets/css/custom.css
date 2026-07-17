@@ -1404,6 +1404,114 @@ h1, h2, h3, h4, h5, h6 {
   resize: vertical;
 }
 
+/* ===== CHAT DOCK ===== */
+.chat-dock {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.chat-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.95rem 1.2rem;
+  border: 1px solid rgba(20, 28, 47, 0.08);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #141c2f 0%, #24344f 55%, #b48645 100%);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 24px 44px -28px rgba(20, 28, 47, 0.85);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), filter var(--transition-base);
+}
+
+.chat-trigger:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+  box-shadow: 0 28px 54px -28px rgba(20, 28, 47, 0.92);
+}
+
+.chat-trigger__icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.chat-panel {
+  width: min(360px, calc(100vw - 2rem));
+  padding: 1rem;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(203, 192, 170, 0.45);
+  background: rgba(255, 252, 247, 0.96);
+  box-shadow: 0 28px 58px -34px rgba(20, 28, 47, 0.48);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.chat-panel[hidden] {
+  display: none !important;
+}
+
+.chat-panel__header,
+.chat-panel__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.chat-panel__header {
+  margin-bottom: 0.6rem;
+}
+
+.chat-panel__title {
+  color: #141c2f;
+  font-weight: 700;
+}
+
+.chat-close {
+  border: 0;
+  background: rgba(20, 28, 47, 0.06);
+  color: #475569;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.chat-link {
+  color: #0f766e;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.chat-link:hover {
+  color: #0d9488;
+}
+
+@media (max-width: 767px) {
+  .chat-dock {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    align-items: stretch;
+  }
+
+  .chat-trigger {
+    justify-content: center;
+  }
+
+  .chat-panel {
+    width: 100%;
+  }
+}
+
 /* ===== TESTIMONIALS ===== */
 .testimonial-card {
   position: relative;
