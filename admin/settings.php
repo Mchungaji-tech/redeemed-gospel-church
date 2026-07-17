@@ -108,8 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <section class="grid lg:grid-cols-3 gap-6">
       <article class="bg-white rounded-xl shadow border border-slate-200 p-6 lg:col-span-3">
-        <h2 class="text-lg font-bold text-slate-900 mb-1">Test Mailbox Access</h2>
-        <p class="text-sm text-slate-500 mb-4">When mail mode is test, outbound emails are captured for review.</p>
+        <h2 class="text-lg font-bold text-slate-900 mb-1">Mail Delivery</h2>
+        <p class="text-sm text-slate-500 mb-4">Use `test` for the local mailbox, `phpmail` for server mail(), or `smtp` for authenticated production delivery.</p>
         <div class="grid sm:grid-cols-3 gap-4">
           <div class="p-4 rounded-lg border border-slate-200 bg-slate-50">
             <p class="text-xs text-slate-500">Mail Mode</p>
@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <a href="<?php echo htmlspecialchars($mailboxUrl); ?>" target="_blank" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-600 text-white text-sm mt-1">Open Mailbox</a>
               <button type="button" onclick="navigator.clipboard.writeText('<?php echo htmlspecialchars($mailboxUrl, ENT_QUOTES); ?>')" class="ml-2 px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm">Copy Link</button>
             <?php else: ?>
-              <p class="text-sm text-amber-700 mt-1">Set RGC_MAIL_MODE=test and RGC_MAILBOX_KEY in .env</p>
+              <p class="text-sm text-amber-700 mt-1">Mailbox only works in `test` mode. For real delivery, configure `smtp` in `.env`.</p>
             <?php endif; ?>
           </div>
         </div>

@@ -550,9 +550,190 @@ function rgcRecordOutboundEmail(string $mailTo, string $subject, string $body, s
   }
 }
 
+function rgcMailEncodeHeader(string $value): string {
+  $value = trim($value);
+  if ($value === '') {
+    return '';
+  }
+  if (function_exists('mb_encode_mimeheader')) {
+    return mb_encode_mimeheader($value, 'UTF-8', 'B', "\r\n");
+  }
+  return $value;
+}
+
+function rgcMailFormatAddress(string $email, string $name = ''): string {
+  $email = trim($email);
+  $name = trim($name);
+  if ($name === '') {
+    return $email;
+  }
+  return rgcMailEncodeHeader($name) . ' <' . $email . '>';
+}
+
+function rgcSmtpReadResponse($socket): array {
+  $response = '';
+  $code = 0;
+  while (!feof($socket)) {
+    $line = fgets($socket, 515);
+    if ($line === false) {
+      break;
+    }
+    $response .= $line;
+    if (preg_match('/^(\d{3})([\s-])/', $line, $matches)) {
+      $code = (int) $matches[1];
+      if ($matches[2] === ' ') {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+  return [$code, trim($response)];
+}
+
+function rgcSmtpExpect($socket, array $expectedCodes, string $action): void {
+  [$code, $response] = rgcSmtpReadResponse($socket);
+  if (!in_array($code, $expectedCodes, true)) {
+    throw new RuntimeException($action . ' failed: ' . ($response !== '' ? $response : 'No SMTP response'));
+  }
+}
+
+function rgcSmtpCommand($socket, string $command, array $expectedCodes, string $action): void {
+  $bytes = fwrite($socket, $command . "\r\n");
+  if ($bytes === false) {
+    throw new RuntimeException($action . ' failed: could not write to SMTP socket');
+  }
+  rgcSmtpExpect($socket, $expectedCodes, $action);
+}
+
+function rgcSmtpNormalizeBody(string $body): string {
+  $body = str_replace(["\r\n", "\r"], "\n", $body);
+  $lines = explode("\n", $body);
+  foreach ($lines as &$line) {
+    if (str_starts_with($line, '.')) {
+      $line = '.' . $line;
+    }
+  }
+  unset($line);
+  return implode("\r\n", $lines);
+}
+
+function rgcSmtpSendMail(string $mailTo, string $subject, string $body): void {
+  $host = trim((string) rgcConfig('smtp.host', ''));
+  $port = (int) rgcConfig('smtp.port', 587);
+  $username = trim((string) rgcConfig('smtp.username', ''));
+  $password = (string) rgcConfig('smtp.password', '');
+  $encryption = strtolower(trim((string) rgcConfig('smtp.encryption', 'tls')));
+  $timeout = max(5, (int) rgcConfig('smtp.timeout', 15));
+  $from = trim((string) rgcConfig('mail.from', ''));
+  $fromName = trim((string) rgcConfig('mail.from_name', 'Redeemed Gospel Church'));
+
+  if ($host === '') {
+    throw new RuntimeException('SMTP host is missing. Set RGC_SMTP_HOST.');
+  }
+  if (!filter_var($from, FILTER_VALIDATE_EMAIL)) {
+    throw new RuntimeException('Mail from address is invalid. Set RGC_MAIL_FROM.');
+  }
+  if (!filter_var($mailTo, FILTER_VALIDATE_EMAIL)) {
+    throw new RuntimeException('Recipient email address is invalid.');
+  }
+
+  $transport = $host;
+  if ($encryption === 'ssl') {
+    $transport = 'ssl://' . $host;
+  } elseif (!in_array($encryption, ['', 'none', 'tls'], true)) {
+    throw new RuntimeException('Unsupported SMTP encryption. Use tls, ssl, or none.');
+  }
+
+  $context = stream_context_create([
+    'ssl' => [
+      'verify_peer' => true,
+      'verify_peer_name' => true,
+      'allow_self_signed' => false,
+      'SNI_enabled' => true,
+      'peer_name' => $host,
+    ],
+  ]);
+
+  $socket = @stream_socket_client(
+    $transport . ':' . $port,
+    $errno,
+    $errstr,
+    $timeout,
+    STREAM_CLIENT_CONNECT,
+    $context
+  );
+
+  if (!is_resource($socket)) {
+    throw new RuntimeException('SMTP connection failed: ' . $errstr . ' (' . $errno . ')');
+  }
+
+  try {
+    stream_set_timeout($socket, $timeout);
+    rgcSmtpExpect($socket, [220], 'SMTP connect');
+
+    $helloDomain = trim((string) ($_SERVER['SERVER_NAME'] ?? 'localhost'));
+    if ($helloDomain === '' || !preg_match('/^[a-z0-9.-]+$/i', $helloDomain)) {
+      $helloDomain = 'localhost';
+    }
+
+    rgcSmtpCommand($socket, 'EHLO ' . $helloDomain, [250], 'SMTP EHLO');
+
+    if ($encryption === 'tls') {
+      rgcSmtpCommand($socket, 'STARTTLS', [220], 'SMTP STARTTLS');
+      $cryptoEnabled = @stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+      if ($cryptoEnabled !== true) {
+        throw new RuntimeException('SMTP STARTTLS negotiation failed.');
+      }
+      rgcSmtpCommand($socket, 'EHLO ' . $helloDomain, [250], 'SMTP EHLO after STARTTLS');
+    }
+
+    if ($username !== '') {
+      rgcSmtpCommand($socket, 'AUTH LOGIN', [334], 'SMTP AUTH LOGIN');
+      rgcSmtpCommand($socket, base64_encode($username), [334], 'SMTP AUTH username');
+      rgcSmtpCommand($socket, base64_encode($password), [235], 'SMTP AUTH password');
+    }
+
+    rgcSmtpCommand($socket, 'MAIL FROM:<' . $from . '>', [250], 'SMTP MAIL FROM');
+    rgcSmtpCommand($socket, 'RCPT TO:<' . $mailTo . '>', [250, 251], 'SMTP RCPT TO');
+    rgcSmtpCommand($socket, 'DATA', [354], 'SMTP DATA');
+
+    $headers = [
+      'Date: ' . date(DATE_RFC2822),
+      'From: ' . rgcMailFormatAddress($from, $fromName),
+      'To: ' . $mailTo,
+      'Subject: ' . rgcMailEncodeHeader($subject),
+      'MIME-Version: 1.0',
+      'Content-Type: text/plain; charset=UTF-8',
+      'Content-Transfer-Encoding: 8bit',
+    ];
+
+    $message = implode("\r\n", $headers) . "\r\n\r\n" . rgcSmtpNormalizeBody($body) . "\r\n.\r\n";
+    $bytes = fwrite($socket, $message);
+    if ($bytes === false) {
+      throw new RuntimeException('SMTP DATA send failed.');
+    }
+    rgcSmtpExpect($socket, [250], 'SMTP message delivery');
+    rgcSmtpCommand($socket, 'QUIT', [221], 'SMTP QUIT');
+  } finally {
+    fclose($socket);
+  }
+}
+
 function rgcSendMail(string $mailTo, string $subject, string $body): bool {
   $mode = strtolower((string) rgcConfig('mail.mode', 'test'));
   $from = (string) rgcConfig('mail.from', 'no-reply@redeemed.local');
+
+  if ($mode === 'smtp') {
+    try {
+      rgcSmtpSendMail($mailTo, $subject, $body);
+      rgcRecordOutboundEmail($mailTo, $subject, $body, 'sent', null);
+      return true;
+    } catch (Throwable $e) {
+      rgcRecordOutboundEmail($mailTo, $subject, $body, 'failed', $e->getMessage());
+      return false;
+    }
+  }
 
   if ($mode === 'phpmail') {
     $headers = 'From: ' . $from;

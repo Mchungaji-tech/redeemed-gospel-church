@@ -51,15 +51,26 @@
 - Optional one-time migration from existing JSON files:
   - `php database/migrate_json_to_db.php`
 
-## Test Mailer (No SMTP)
+## Mail Setup
 - Set in `.env`:
   - `RGC_MAIL_MODE=test`
   - `RGC_MAILBOX_KEY=your-secret`
 - OTP emails are captured into DB table `outbound_emails`.
 - View mailbox in browser:
   - `/redeemed-gospel-church/mailbox.php?key=your-secret`
-- For production, switch to:
-  - `RGC_MAIL_MODE=phpmail`
+- For production with SMTP, set:
+  - `RGC_MAIL_MODE=smtp`
+  - `RGC_MAIL_FROM=you@yourdomain.com`
+  - `RGC_MAIL_FROM_NAME=Redeemed Gospel Church`
+  - `RGC_SMTP_HOST=mail.yourdomain.com`
+  - `RGC_SMTP_PORT=587`
+  - `RGC_SMTP_USERNAME=you@yourdomain.com`
+  - `RGC_SMTP_PASSWORD=your-email-password`
+  - `RGC_SMTP_ENCRYPTION=tls`
+- Supported mail modes:
+  - `test` = store emails in DB mailbox only
+  - `phpmail` = use PHP `mail()`
+  - `smtp` = send through authenticated SMTP
 
 ## Payments
 - Public giving now supports:
