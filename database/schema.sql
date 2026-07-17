@@ -1,4 +1,8 @@
-
+-- Shared hosting note:
+-- cPanel may require you to create the database first from the MySQL Databases page.
+-- These statements are included so the schema is complete on hosts that allow database creation by import.
+CREATE DATABASE IF NOT EXISTS `tektxbzg_mchungi` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `tektxbzg_mchungi`;
 
 CREATE TABLE IF NOT EXISTS app_settings (
   id TINYINT PRIMARY KEY,
@@ -202,9 +206,10 @@ CREATE TABLE IF NOT EXISTS donations (
   email VARCHAR(180) NULL,
   amount_cents INT NOT NULL,
   currency CHAR(3) NOT NULL DEFAULT 'KES',
+  giving_type ENUM('offering','tithe','donation') NOT NULL DEFAULT 'donation',
   note VARCHAR(255) NULL,
   status ENUM('pending','received','failed') NOT NULL DEFAULT 'pending',
-  method ENUM('mpesa','bank','paypal','stripe','cash') NOT NULL DEFAULT 'mpesa',
+  method ENUM('paybill','paystack','bank','cash','mpesa','paypal','stripe') NOT NULL DEFAULT 'paybill',
   reference VARCHAR(120) NULL,
   phone VARCHAR(20) NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -215,9 +220,13 @@ CREATE TABLE IF NOT EXISTS donations (
 
 -- Upgrade: ensure new donation columns exist on older donations
 ALTER TABLE donations
-  ADD COLUMN IF NOT EXISTS method ENUM('mpesa','bank','paypal','stripe','cash') NOT NULL DEFAULT 'mpesa',
+  ADD COLUMN IF NOT EXISTS giving_type ENUM('offering','tithe','donation') NOT NULL DEFAULT 'donation',
+  ADD COLUMN IF NOT EXISTS method ENUM('paybill','paystack','bank','cash','mpesa','paypal','stripe') NOT NULL DEFAULT 'paybill',
   ADD COLUMN IF NOT EXISTS reference VARCHAR(120) NULL,
   ADD COLUMN IF NOT EXISTS phone VARCHAR(20) NULL;
+
+ALTER TABLE donations
+  MODIFY COLUMN method ENUM('paybill','paystack','bank','cash','mpesa','paypal','stripe') NOT NULL DEFAULT 'paybill';
 
 CREATE TABLE IF NOT EXISTS public_messages (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,

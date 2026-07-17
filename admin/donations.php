@@ -33,7 +33,7 @@ if (rgcDbAvailable()) {
       $w[] = 'status = :status';
       $params[':status'] = $status;
     }
-    if (in_array($method, ['mpesa', 'bank', 'paypal', 'stripe', 'cash'], true)) {
+    if (in_array($method, ['paybill', 'paystack', 'bank', 'cash', 'mpesa', 'paypal', 'stripe'], true)) {
       $w[] = 'method = :method';
       $params[':method'] = $method;
     }
@@ -54,7 +54,7 @@ if (rgcDbAvailable()) {
     $cstmt->execute();
     $total = (int) ($cstmt->fetch()['c'] ?? 0);
 
-    $sql = 'SELECT id, user_id, full_name, email, amount_cents, currency, note, status, method, reference, phone, created_at, updated_at
+    $sql = 'SELECT id, user_id, full_name, email, amount_cents, currency, giving_type, note, status, method, reference, phone, created_at, updated_at
             FROM donations' . $whereSql . ' ORDER BY id DESC LIMIT :lim OFFSET :off';
     $stmt = rgcDb()->prepare($sql);
     foreach ($params as $k => $v) {
@@ -146,10 +146,12 @@ $baseUrl = rgcUrl('admin/donations.php');
           </select>
           <select name="method" class="border border-slate-300 rounded-lg px-3 py-2">
             <option value="">All methods</option>
-            <option value="mpesa" <?php echo $method === 'mpesa' ? 'selected' : ''; ?>>mpesa</option>
-            <option value="paypal" <?php echo $method === 'paypal' ? 'selected' : ''; ?>>paypal</option>
+            <option value="paybill" <?php echo $method === 'paybill' ? 'selected' : ''; ?>>paybill</option>
+            <option value="paystack" <?php echo $method === 'paystack' ? 'selected' : ''; ?>>paystack</option>
             <option value="bank" <?php echo $method === 'bank' ? 'selected' : ''; ?>>bank</option>
             <option value="cash" <?php echo $method === 'cash' ? 'selected' : ''; ?>>cash</option>
+            <option value="mpesa" <?php echo $method === 'mpesa' ? 'selected' : ''; ?>>mpesa</option>
+            <option value="paypal" <?php echo $method === 'paypal' ? 'selected' : ''; ?>>paypal</option>
             <option value="stripe" <?php echo $method === 'stripe' ? 'selected' : ''; ?>>stripe</option>
           </select>
           <input type="date" name="date_from" value="<?php echo htmlspecialchars($dateFrom); ?>" class="border border-slate-300 rounded-lg px-3 py-2">
@@ -170,6 +172,7 @@ $baseUrl = rgcUrl('admin/donations.php');
               <th class="text-left px-4 py-3">Name</th>
               <th class="text-left px-4 py-3">Email</th>
               <th class="text-left px-4 py-3">Amount</th>
+              <th class="text-left px-4 py-3">Type</th>
               <th class="text-left px-4 py-3">Method</th>
               <th class="text-left px-4 py-3">Status</th>
               <th class="text-left px-4 py-3">Phone / Ref</th>
@@ -182,6 +185,7 @@ $baseUrl = rgcUrl('admin/donations.php');
               <td class="px-4 py-3 text-slate-900"><?php echo htmlspecialchars((string) ($r['full_name'] ?? '')); ?></td>
               <td class="px-4 py-3 text-slate-700"><?php echo htmlspecialchars((string) ($r['email'] ?? '')); ?></td>
               <td class="px-4 py-3 text-slate-900 font-medium"><?php echo htmlspecialchars(rgcFormatAmount((int) ($r['amount_cents'] ?? 0), (string) ($r['currency'] ?? 'KES'))); ?></td>
+              <td class="px-4 py-3 text-slate-700"><?php echo htmlspecialchars((string) ($r['giving_type'] ?? 'donation')); ?></td>
               <td class="px-4 py-3 text-slate-700"><?php echo htmlspecialchars((string) ($r['method'] ?? '')); ?></td>
               <td class="px-4 py-3">
                 <?php $st = (string) ($r['status'] ?? 'pending'); ?>
@@ -194,7 +198,7 @@ $baseUrl = rgcUrl('admin/donations.php');
             </tr>
             <?php endforeach; ?>
             <?php if (empty($rows)): ?>
-            <tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">No donation records found.</td></tr>
+            <tr><td colspan="8" class="px-4 py-6 text-center text-slate-500">No donation records found.</td></tr>
             <?php endif; ?>
           </tbody>
         </table>

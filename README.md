@@ -15,6 +15,23 @@
 4. Open site: `http://localhost/redeemed-gospel-church/`
 5. Admin login: `http://localhost/redeemed-gospel-church/admin/login.php`
 
+## cPanel Deployment Setup
+1. Create the repository in cPanel Git Version Control and make sure [`.cpanel.yml`](.cpanel.yml) is committed and pushed.
+2. In cPanel `MySQL Databases`, create:
+   - Database: `tektxbzg_mchungi`
+   - Database user: `tektxbzg_mchungi`
+   - Assign the user to the database with all privileges.
+3. Import [`database/schema.sql`](database/schema.sql) in `phpMyAdmin`.
+   - The schema includes `CREATE DATABASE` and `USE` statements for supported hosts.
+   - If your host blocks `CREATE DATABASE` during import, create the database in cPanel first, then re-import the schema.
+4. Copy [`.env.example`](.env.example) to `.env` on the server and set the real values, especially:
+   - `RGC_DB_PASS`
+   - `RGC_DONATE_PAYSTACK_URL`
+   - `RGC_ADMIN_REG_KEY`
+   - `RGC_SUPER_ADMIN_REG_KEY`
+5. Confirm your site URL is `https://tektrend.online`.
+6. Open `https://tektrend.online/admin/register.php` to create the first admin account.
+
 ## Admin Account Lifecycle
 - Register: `/admin/register.php`
 - Activate account from generated activation link: `/admin/activate.php?...`
@@ -44,12 +61,18 @@
 - For production, switch to:
   - `RGC_MAIL_MODE=phpmail`
 
-## Payments (Hardened Endpoints)
-- `api/paypal_record.php` now verifies PayPal order server-side before marking donation as received.
-- `api/mpesa_stk.php` now validates CSRF, donation ownership, and pending state before sending STK push.
-- M-Pesa callback endpoint:
-  - `api/mpesa_webhook.php`
-  - Protect with `RGC_MPESA_WEBHOOK_KEY` and include same key in callback URL.
+## Payments
+- Public giving now supports:
+  - Church Paybill `122766`
+  - Account references: `Offering`, `Tithe`, `Donation`
+  - Paystack via external payment link
+  - Bank detail request via WhatsApp or email
+  - Cash / in-person giving
+- Configure these in `.env`:
+  - `RGC_DONATE_PAYSTACK_URL`
+  - `RGC_DONATE_PAYBILL_NUMBER`
+  - `RGC_DONATE_CONTACT_WHATSAPP`
+  - `RGC_DONATE_CONTACT_EMAIL`
 
 ## Maintenance Mode
 - Public visitors are redirected to maintenance page when enabled.

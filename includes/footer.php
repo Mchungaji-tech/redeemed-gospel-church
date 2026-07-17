@@ -17,9 +17,9 @@ $footerData = rgcLoadJson('footer.json', [
     ],
     'contact' => [
         'address' => 'Eldoret, Kenya',
-        'email' => 'info@redeemedgospel.org',
-        'phone' => '+254 700 000 000',
-        'whatsapp' => '0729222999'
+        'email' => 'redeemedgospelchurch.eldoret@gmail.com',
+        'phone' => '0722551152',
+        'whatsapp' => '0722551152'
     ],
     'designer_credit' => 'Designed by TekTrend'
 ]);
