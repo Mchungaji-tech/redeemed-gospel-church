@@ -3,6 +3,6 @@
 # Adjust DEPLOYPATH if this site should deploy to a subfolder instead of public_html.
 deployment:
   tasks:
-    - 'export DEPLOYPATH=$HOME/public_html'
+    - 'export DEPLOYPATH=$HOME/public_html/redeemed'
     - '/bin/mkdir -p "$DEPLOYPATH"'
     - '/usr/bin/find . -mindepth 1 -maxdepth 1 ! -name ".git" ! -name ".cpanel.yml" ! -name ".gitignore" ! -name ".env" ! -name ".env.example" -exec /bin/cp -R {} "$DEPLOYPATH" \;'
