@@ -499,6 +499,12 @@ body.lightbox-open {
     display: none !important;
   }
 
+  .mobile-home-shortcuts {
+    display: block;
+    padding: 0 0 1rem;
+    margin-top: -0.2rem;
+  }
+
   .sanctuary-stage {
     min-height: auto;
   }
@@ -506,6 +512,10 @@ body.lightbox-open {
   .sanctuary-stage .max-w-\[1280px\] {
     padding-top: 2.25rem;
     padding-bottom: 2.25rem;
+  }
+
+  .sanctuary-kicker {
+    margin-bottom: 0.7rem;
   }
 
   .sanctuary-copy__lead {
@@ -528,6 +538,7 @@ body.lightbox-open {
     padding: 1.15rem;
   }
 
+  .sermon-showcase__meta,
   .sermon-showcase__summary,
   .sermon-showcase__actions,
   .mosaic-mini-list__item p,
@@ -536,16 +547,35 @@ body.lightbox-open {
   }
 
   .sermon-showcase__lead h3 {
-    margin-top: 0.65rem;
-    font-size: 1.7rem;
+    margin-top: 0;
+    font-size: 1.55rem;
+    line-height: 1.12;
   }
 
   .sermon-showcase__speaker {
-    margin-top: 0.35rem;
+    margin-top: 0.2rem;
+    font-size: 0.95rem;
   }
 
   .mosaic-panel {
     padding: 1.15rem;
+  }
+
+  .pulse-card__header {
+    margin-bottom: 0.65rem;
+  }
+
+  .pulse-card__header h3 {
+    margin-top: 0.15rem;
+    font-size: 1.45rem;
+  }
+
+  .mosaic-mini-list {
+    gap: 0.65rem;
+  }
+
+  .mosaic-mini-list__item {
+    padding: 0.85rem 0.95rem;
   }
 
   .summit-cta {
@@ -1621,6 +1651,42 @@ h1, h2, h3, h4, h5, h6 {
 
 .chat-link:hover {
   color: #0d9488;
+}
+
+.mobile-home-shortcuts {
+  display: none;
+}
+
+.mobile-home-shortcuts__grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.mobile-home-shortcuts__card {
+  display: block;
+  padding: 1rem 1.05rem;
+  border-radius: 1.15rem;
+  text-decoration: none;
+  color: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,250,243,0.94) 100%);
+  border: 1px solid rgba(203, 192, 170, 0.42);
+  box-shadow: var(--shadow-sm);
+}
+
+.mobile-home-shortcuts__card span {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8e6529;
+}
+
+.mobile-home-shortcuts__card strong {
+  display: block;
+  color: #182033;
+  font-size: 1rem;
 }
 
 @media (max-width: 767px) {

@@ -330,6 +330,25 @@ require __DIR__ . '/includes/header.php';
   </div>
 </section>
 
+<section class="mobile-home-shortcuts">
+  <div class="max-w-[1280px] mx-auto px-4">
+    <div class="mobile-home-shortcuts__grid">
+      <a href="<?php echo rgcUrl('contact.php'); ?>" class="mobile-home-shortcuts__card">
+        <span>Visit</span>
+        <strong>Plan Your Visit</strong>
+      </a>
+      <a href="<?php echo rgcUrl('sermons.php'); ?>" class="mobile-home-shortcuts__card">
+        <span>Watch</span>
+        <strong>Latest Sermon</strong>
+      </a>
+      <a href="<?php echo rgcUrl('contact.php'); ?>" class="mobile-home-shortcuts__card">
+        <span>Prayer</span>
+        <strong>Send Request</strong>
+      </a>
+    </div>
+  </div>
+</section>
+
 <section class="section-padding pt-0 homepage-mobile-secondary">
   <div class="max-w-[1280px] mx-auto px-4">
     <article class="story-card story-card--arrival p-12 md:p-20 rounded-[3rem] bg-white shadow-2xl border border-slate-100 text-center max-w-5xl mx-auto">
@@ -414,7 +433,7 @@ require __DIR__ . '/includes/header.php';
         <h2 class="text-4xl md:text-6xl font-display font-bold mt-4 leading-tight">Truth for Monday.</h2>
         <p class="text-lg text-slate-500 mt-4">Experience teachings that bridge the gap between biblical truth and daily life.</p>
       </div>
-      <a href="<?php echo rgcUrl('sermons.php'); ?>" class="btn btn-primary h-fit">Watch All Sermons</a>
+      <a href="<?php echo rgcUrl('sermons.php'); ?>" class="btn btn-primary h-fit homepage-mobile-secondary">Watch All Sermons</a>
     </div>
 
     <?php if ($leadSermon): ?>
@@ -531,7 +550,7 @@ require __DIR__ . '/includes/header.php';
               <span class="story-card__eyebrow">Ministries</span>
               <h3 class="text-2xl font-display font-bold mt-3 leading-tight">Spaces to grow.</h3>
             </div>
-            <a href="<?php echo rgcUrl('ministries.php'); ?>" class="home-panel__link">Explore</a>
+            <a href="<?php echo rgcUrl('ministries.php'); ?>" class="home-panel__link homepage-mobile-secondary">Explore</a>
           </div>
           <div class="mosaic-mini-list">
             <?php foreach ($homeMinistries as $index => $ministry): ?>
@@ -587,7 +606,7 @@ require __DIR__ . '/includes/header.php';
 </section>
 <?php endif; ?>
 
-<section class="section-padding pt-0">
+<section class="section-padding pt-0 homepage-mobile-secondary">
   <div class="max-w-[1120px] mx-auto px-4">
     <div class="summit-cta p-10 rounded-3xl bg-white shadow-lg border border-slate-100 text-center">
       <span class="story-card__eyebrow">Begin Here</span>
