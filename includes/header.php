@@ -155,7 +155,7 @@ foreach ($liveSermons as $s) {
       </span>
       <?php endif; ?>
       <a href="<?php echo rgcUrl('contact.php'); ?>" class="hidden md:inline-flex btn btn-outline text-sm">Plan Your Visit</a>
-      <a href="<?php echo rgcUrl('donate.php'); ?>" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-brand-700 transition-all shadow-sm">
+      <a href="<?php echo rgcUrl('donate.php'); ?>" class="hidden md:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-brand-700 transition-all shadow-sm">
         Support the Mission
       </a>
       <?php $pu = rgcPublicUser(); ?>
@@ -188,16 +188,44 @@ foreach ($liveSermons as $s) {
     <span class="mobile-menu__eyebrow">Welcome Home</span>
     <p>Join us for worship, prayer, discipleship, and community in Eldoret.</p>
   </div>
-  <a href="<?php echo rgcUrl('index.php'); ?>" onclick="toggleMobileMenu()">Home</a>
-  <a href="<?php echo rgcUrl('about.php'); ?>" onclick="toggleMobileMenu()">About</a>
-  <a href="<?php echo rgcUrl('ministries.php'); ?>" onclick="toggleMobileMenu()">Ministries</a>
-  <a href="<?php echo rgcUrl('missions.php'); ?>" onclick="toggleMobileMenu()">Missions</a>
-  <a href="<?php echo rgcUrl('projects.php'); ?>" onclick="toggleMobileMenu()">Projects</a>
-  <a href="<?php echo rgcUrl('events.php'); ?>" onclick="toggleMobileMenu()">Events</a>
-  <a href="<?php echo rgcUrl('sermons.php'); ?>" onclick="toggleMobileMenu()">Sermons</a>
-  <a href="<?php echo rgcUrl('contact.php'); ?>" onclick="toggleMobileMenu()">Prayer Request</a>
-  <a href="<?php echo rgcUrl('blog.php'); ?>" onclick="toggleMobileMenu()">Blog</a>
-  <a href="<?php echo rgcUrl('donate.php'); ?>" onclick="toggleMobileMenu()" class="mobile-donate">Support the Mission</a>
+  <div class="mobile-menu__primary">
+    <a href="<?php echo rgcUrl('index.php'); ?>" onclick="toggleMobileMenu()">Home</a>
+    <a href="<?php echo rgcUrl('about.php'); ?>" onclick="toggleMobileMenu()">About</a>
+    <a href="<?php echo rgcUrl('ministries.php'); ?>" onclick="toggleMobileMenu()">Ministries</a>
+    <a href="<?php echo rgcUrl('sermons.php'); ?>" onclick="toggleMobileMenu()">Sermons</a>
+    <a href="<?php echo rgcUrl('contact.php'); ?>" onclick="toggleMobileMenu()">Plan Your Visit</a>
+  </div>
+
+  <details class="mobile-menu__group">
+    <summary>More Pages</summary>
+    <div class="mobile-menu__group-links">
+      <a href="<?php echo rgcUrl('missions.php'); ?>" onclick="toggleMobileMenu()">Missions</a>
+      <a href="<?php echo rgcUrl('projects.php'); ?>" onclick="toggleMobileMenu()">Projects</a>
+      <a href="<?php echo rgcUrl('events.php'); ?>" onclick="toggleMobileMenu()">Events</a>
+      <a href="<?php echo rgcUrl('blog.php'); ?>" onclick="toggleMobileMenu()">Blog</a>
+      <a href="<?php echo rgcUrl('contact.php'); ?>" onclick="toggleMobileMenu()">Prayer Request</a>
+    </div>
+  </details>
+
+  <details class="mobile-menu__group">
+    <summary><?php echo $pu ? 'My Account' : 'Login Or Register'; ?></summary>
+    <div class="mobile-menu__group-links">
+      <?php if ($pu): ?>
+      <a href="<?php echo rgcUrl('user/dashboard.php'); ?>" onclick="toggleMobileMenu()">Dashboard</a>
+      <a href="<?php echo rgcUrl('user/logout.php?r=' . urlencode($currentPath)); ?>" onclick="toggleMobileMenu()">Logout</a>
+      <?php else: ?>
+      <a href="<?php echo rgcUrl('user/login.php?r=' . urlencode($currentPath)); ?>" onclick="toggleMobileMenu()">Login</a>
+      <a href="<?php echo rgcUrl('user/register.php?r=' . urlencode($currentPath)); ?>" onclick="toggleMobileMenu()">Register</a>
+      <?php endif; ?>
+    </div>
+  </details>
+
+  <div class="mobile-menu__actions">
+    <a href="<?php echo rgcUrl('donate.php'); ?>" onclick="toggleMobileMenu()" class="mobile-donate">Support the Mission</a>
+    <?php if ($liveSermon): ?>
+    <a href="<?php echo rgcUrl('sermons.php?id=' . (int) $liveSermon['id']); ?>" onclick="toggleMobileMenu()" class="mobile-live-link">Live Now</a>
+    <?php endif; ?>
+  </div>
 </div>
 
 <script>

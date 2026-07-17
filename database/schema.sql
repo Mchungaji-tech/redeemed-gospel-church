@@ -1,8 +1,3 @@
--- Shared hosting note:
--- cPanel may require you to create the database first from the MySQL Databases page.
--- These statements are included so the schema is complete on hosts that allow database creation by import.
-CREATE DATABASE IF NOT EXISTS `tektxbzg_mchungi` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `tektxbzg_mchungi`;
 
 CREATE TABLE IF NOT EXISTS app_settings (
   id TINYINT PRIMARY KEY,
