@@ -345,9 +345,25 @@ require __DIR__ . '/includes/header.php';
         <span>Prayer</span>
         <strong>Send Request</strong>
       </a>
+      <a href="<?php echo rgcUrl('donate.php'); ?>" class="mobile-home-shortcuts__card">
+        <span>Support</span>
+        <strong>Support the Mission</strong>
+      </a>
     </div>
   </div>
 </section>
+
+<?php if ($nextEvent): ?>
+<section class="mobile-home-event">
+  <div class="max-w-[1280px] mx-auto px-4">
+    <a href="<?php echo rgcUrl('events.php'); ?>" class="mobile-home-event__card">
+      <span class="mobile-home-event__eyebrow">Featured Event</span>
+      <strong><?php echo htmlspecialchars($nextEvent['title'] ?? 'Upcoming Event'); ?></strong>
+      <p><?php echo htmlspecialchars(date('M d, Y · g:i A', strtotime((string) ($nextEvent['event_at'] ?? 'now'))) . ' · ' . ($nextEvent['location'] ?? 'Sanctuary')); ?></p>
+    </a>
+  </div>
+</section>
+<?php endif; ?>
 
 <section class="section-padding pt-0 homepage-mobile-secondary">
   <div class="max-w-[1280px] mx-auto px-4">
