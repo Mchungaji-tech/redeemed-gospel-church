@@ -657,6 +657,40 @@ h1, h2, h3, h4, h5, h6 {
   border-color: rgba(20, 184, 166, 0.2);
 }
 
+@media (hover: none), (pointer: coarse) {
+  .btn:hover,
+  .btn-primary:hover,
+  .btn-outline:hover,
+  .card:hover,
+  .ministry-card:hover,
+  .quick-entry-card:hover,
+  .next-step-card:hover,
+  .sermon-stack-card:hover,
+  .home-ministry-card:hover,
+  .home-project-card:hover,
+  .sanctuary-path__item:hover,
+  .hero-slider-arrow:hover {
+    transform: none;
+    filter: none;
+    box-shadow: inherit;
+  }
+
+  #sermonSlides .group img {
+    transform: scale(1.03);
+  }
+
+  #sermonSlides .group .w-16.h-16 {
+    transform: scale(1.05);
+  }
+
+  .touch-device #prevSlide,
+  .touch-device #nextSlide,
+  .touch-device .hero-slider-arrow {
+    background: rgba(15, 23, 42, 0.5);
+    border-color: rgba(255, 255, 255, 0.24);
+  }
+}
+
 .card-glass {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
@@ -4086,6 +4120,10 @@ main {
   transform: none;
 }
 
+.scroll-reveal--section.reveal-ready {
+  transform: translateY(54px);
+}
+
 .scroll-reveal.reveal-ready {
   opacity: 0;
   transform: translateY(36px);
@@ -4112,9 +4150,56 @@ main {
   transform: translateY(-58px);
 }
 
+.scroll-reveal--icon.reveal-ready {
+  opacity: 0;
+  transform: translateY(28px) scale(0.72) rotate(-14deg);
+  filter: blur(6px);
+  transition:
+    opacity 0.75s ease var(--reveal-delay, 0s),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s),
+    filter 0.75s ease var(--reveal-delay, 0s);
+}
+
+.scroll-reveal--icon.scroll-reveal--reverse.reveal-ready {
+  transform: translateY(-28px) scale(0.72) rotate(14deg);
+}
+
+.scroll-reveal--word {
+  overflow: hidden;
+}
+
+.word-reveal__mask {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+.word-reveal__word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(130%) skewY(10deg);
+  transition:
+    opacity 0.72s ease calc(var(--reveal-delay, 0s) + var(--word-delay, 0s)),
+    transform 0.86s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--reveal-delay, 0s) + var(--word-delay, 0s));
+}
+
+.scroll-reveal--word.scroll-reveal--reverse.reveal-ready .word-reveal__word {
+  transform: translateY(-130%) skewY(-10deg);
+}
+
 .scroll-reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.scroll-reveal.is-visible.scroll-reveal--icon {
+  filter: none;
+  transform: translateY(0) scale(1) rotate(0);
+}
+
+.scroll-reveal.is-visible.scroll-reveal--word .word-reveal__word {
+  opacity: 1;
+  transform: translateY(0) skewY(0);
 }
 
 .bishop-band.reveal-ready .bishop-band__left {

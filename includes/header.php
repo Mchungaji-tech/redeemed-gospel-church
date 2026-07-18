@@ -13,6 +13,7 @@ $headerService = $headerFooterData['service_times'][0] ?? ['day' => 'Sunday Serv
 $headerAddress = trim((string) ($headerFooterData['contact']['address'] ?? 'Eldoret, Kenya'));
 $headerPhone = trim((string) ($headerFooterData['contact']['phone'] ?? ''));
 $headerEmail = trim((string) ($headerFooterData['contact']['email'] ?? ''));
+$pageName = basename($currentPath !== '' ? $currentPath : '/index.php');
 $bodyClasses = ['bg-stone-50', 'text-slate-900', 'font-body', 'page-enter'];
 if ($themePreview !== '') {
   $bodyClasses[] = 'theme-preview';
@@ -88,7 +89,7 @@ foreach ($liveSermons as $s) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="<?php echo htmlspecialchars(implode(' ', $bodyClasses)); ?>">
+<body class="<?php echo htmlspecialchars(implode(' ', $bodyClasses)); ?>" data-page="<?php echo htmlspecialchars($pageName); ?>">
 
 <?php if ($broadcast): ?>
 <div class="broadcast-bar text-white text-sm py-2 px-4 text-center relative overflow-hidden">

@@ -100,5 +100,126 @@ $footerData = rgcLoadJson('footer.json', [
   </div>
 </footer>
 
+<script>
+(function () {
+  const body = document.body;
+  if (!body) return;
+
+  const page = body.dataset.page || '';
+  const isTouch = window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  if (isTouch) {
+    body.classList.add('touch-device');
+  }
+
+  const skipMotionPages = new Set(['index.php', 'blog.php', 'blog-post.php']);
+  if (skipMotionPages.has(page)) {
+    return;
+  }
+
+  const main = document.querySelector('main');
+  if (!main) return;
+
+  function setRevealDelay(node, value) {
+    if (node.style.getPropertyValue('--reveal-delay') !== '') return;
+    node.style.setProperty('--reveal-delay', value);
+  }
+
+  function markUnique(nodes, classes, baseDelay, step) {
+    nodes.forEach((node, index) => {
+      if (!(node instanceof HTMLElement) || node.classList.contains('scroll-reveal')) return;
+      node.classList.add('scroll-reveal', ...classes.filter((name) => name !== 'scroll-reveal'));
+      setRevealDelay(node, `${Math.min(baseDelay + index * step, 0.36).toFixed(2)}s`);
+    });
+  }
+
+  const sections = Array.from(main.querySelectorAll(':scope > section'));
+  markUnique(sections, ['scroll-reveal', 'scroll-reveal--section'], 0.04, 0.04);
+
+  const cardNodes = Array.from(main.querySelectorAll('.card, .pulse-card, .event-card, .testimonial-card, .ministry-section, .footer-showcase__card, .footer-panel, .next-step-card, .vision-media-card'));
+  markUnique(cardNodes, ['scroll-reveal', 'scroll-reveal--text'], 0.08, 0.03);
+
+  const iconNodes = Array.from(main.querySelectorAll('.w-10.h-10, .w-12.h-12, .w-14.h-14, .w-16.h-16, .w-20.h-20, .w-24.h-24'))
+    .filter((node) => node.querySelector('svg'));
+  markUnique(iconNodes, ['scroll-reveal', 'scroll-reveal--icon'], 0.06, 0.025);
+
+  const headingNodes = Array.from(main.querySelectorAll('section h1, section h2, section h3'));
+  headingNodes.forEach((heading, index) => {
+    if (!(heading instanceof HTMLElement)) return;
+    if (heading.closest('.scroll-reveal--word')) return;
+    if (heading.children.length > 0) {
+      if (!heading.classList.contains('scroll-reveal')) {
+        heading.classList.add('scroll-reveal', 'scroll-reveal--text');
+        setRevealDelay(heading, `${Math.min(0.08 + index * 0.02, 0.28).toFixed(2)}s`);
+      }
+      return;
+    }
+
+    const text = heading.textContent.trim();
+    const words = text === '' ? [] : text.split(/\s+/);
+    if (words.length === 0 || words.length > 12) {
+      if (!heading.classList.contains('scroll-reveal')) {
+        heading.classList.add('scroll-reveal', 'scroll-reveal--text');
+        setRevealDelay(heading, `${Math.min(0.08 + index * 0.02, 0.28).toFixed(2)}s`);
+      }
+      return;
+    }
+
+    heading.dataset.motionSplit = 'true';
+    heading.classList.add('scroll-reveal', 'scroll-reveal--word');
+    setRevealDelay(heading, `${Math.min(0.08 + index * 0.02, 0.28).toFixed(2)}s`);
+    heading.textContent = '';
+
+    words.forEach((word, wordIndex) => {
+      const outer = document.createElement('span');
+      outer.className = 'word-reveal__mask';
+      const inner = document.createElement('span');
+      inner.className = 'word-reveal__word';
+      inner.style.setProperty('--word-delay', `${Math.min(wordIndex * 0.05, 0.4).toFixed(2)}s`);
+      inner.textContent = word;
+      outer.appendChild(inner);
+      heading.appendChild(outer);
+      if (wordIndex < words.length - 1) {
+        heading.appendChild(document.createTextNode(' '));
+      }
+    });
+  });
+
+  const textBlocks = Array.from(main.querySelectorAll('section p, section li, section .btn'))
+    .filter((node) => node instanceof HTMLElement && !node.classList.contains('scroll-reveal') && !node.closest('.scroll-reveal--word'));
+  markUnique(textBlocks.slice(0, 60), ['scroll-reveal', 'scroll-reveal--text'], 0.1, 0.015);
+
+  const revealItems = Array.from(document.querySelectorAll('.scroll-reveal'));
+  if (!revealItems.length) return;
+
+  revealItems.forEach((item) => item.classList.add('reveal-ready'));
+
+  if (!('IntersectionObserver' in window)) {
+    revealItems.forEach((item) => item.classList.add('is-visible'));
+    return;
+  }
+
+  let lastScrollY = window.pageYOffset || window.scrollY || 0;
+  let scrollDirection = 'down';
+
+  window.addEventListener('scroll', () => {
+    const currentY = window.pageYOffset || window.scrollY || 0;
+    scrollDirection = currentY > lastScrollY ? 'down' : 'up';
+    lastScrollY = currentY;
+  }, { passive: true });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      entry.target.classList.toggle('scroll-reveal--reverse', scrollDirection === 'up');
+      entry.target.classList.toggle('is-visible', entry.isIntersecting);
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  revealItems.forEach((item) => observer.observe(item));
+})();
+</script>
+
 </body>
 </html>

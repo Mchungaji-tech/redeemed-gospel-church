@@ -266,11 +266,6 @@ require __DIR__ . '/includes/header.php';
     <?php endforeach; ?>
   </div>
   <div class="hero-slider-controls">
-    <div class="hero-slider-controls__dots">
-      <?php foreach ($slider as $idx => $slide): ?>
-      <button type="button" class="hero-dot <?php echo $idx === 0 ? 'active' : ''; ?>" data-slide-to="<?php echo $idx; ?>" aria-label="Go to slide <?php echo $idx + 1; ?>"></button>
-      <?php endforeach; ?>
-    </div>
     <div class="hero-slider-controls__arrows">
       <button id="heroPrev" type="button" class="hero-slider-arrow" aria-label="Previous slide">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
@@ -582,7 +577,6 @@ require __DIR__ . '/includes/header.php';
   if (!sliderRoot) return;
 
   const slides = Array.from(sliderRoot.querySelectorAll('.hero-slide-item'));
-  const dots = Array.from(document.querySelectorAll('.hero-dot'));
   const prevBtn = document.getElementById('heroPrev');
   const nextBtn = document.getElementById('heroNext');
   const progressBar = document.getElementById('heroSliderProgressBar');
@@ -594,17 +588,10 @@ require __DIR__ . '/includes/header.php';
   let autoAdvance = null;
   let motionToken = 0;
 
-  function syncDots(index) {
-    dots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === index);
-    });
-  }
-
   function finishState(index) {
     slides.forEach((slide, i) => {
       slide.classList.toggle('active', i === index);
     });
-    syncDots(index);
   }
 
   function animateVisual(node, frames, duration) {
@@ -710,14 +697,6 @@ require __DIR__ . '/includes/header.php';
 
   if (prevBtn) prevBtn.addEventListener('click', prevSlide);
   if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-
-  dots.forEach((dot, i) => {
-    dot.addEventListener('click', () => {
-      const direction = i > current ? 'next' : 'prev';
-      showSlide(i, direction);
-      restartTimer();
-    });
-  });
 
   showSlide(0, 'next', true);
   restartTimer();
