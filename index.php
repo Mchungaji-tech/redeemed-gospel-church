@@ -213,138 +213,71 @@ require __DIR__ . '/includes/header.php';
   </form>
 </div>
 
-<section class="sanctuary-stage scroll-reveal" style="--hero-image: url('<?php echo htmlspecialchars($heroBackground); ?>'); --reveal-delay: 0.02s;">
-  <div class="max-w-[1280px] mx-auto px-4 pt-10 pb-14 md:pt-16 md:pb-24">
-    <div class="sanctuary-stage__grid">
-      <div class="sanctuary-copy text-center md:text-left scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.08s;">
-        <span class="sanctuary-kicker">Not Just A Church Service</span>
-        <h1 class="sanctuary-copy__title sanctuary-copy__title--desktop text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">Step into a living story of worship, healing, and belonging.</h1>
-        <h1 class="sanctuary-copy__title sanctuary-copy__title--mobile text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">Worship, prayer, and belonging.</h1>
-        <p class="sanctuary-copy__lead sanctuary-copy__lead--desktop text-lg md:text-xl max-w-3xl mx-auto md:mx-0"><?php echo htmlspecialchars($footerData['church']['mission'] ?? 'Join our community of faith as we seek to worship God, grow in His grace, and serve the people of Eldoret and beyond.'); ?></p>
-        <p class="sanctuary-copy__lead sanctuary-copy__lead--mobile text-lg md:text-xl max-w-3xl mx-auto md:mx-0">Find a Christ-centered church home in Eldoret with clear teaching, warm worship, and real community.</p>
-        <div class="sanctuary-copy__actions justify-center md:justify-start">
-          <a href="<?php echo rgcUrl('contact.php'); ?>" class="btn btn-primary">Plan Your Visit</a>
-          <a href="<?php echo rgcUrl('sermons.php'); ?>" class="btn btn-outline homepage-mobile-secondary">Experience A Message</a>
+<section class="sanctuary-stage sanctuary-stage--immersive scroll-reveal" style="--hero-image: url('<?php echo htmlspecialchars($heroBackground); ?>'); --reveal-delay: 0.02s;">
+  <div class="hero-slider-progress" aria-hidden="true">
+    <span id="heroSliderProgressBar" class="hero-slider-progress__bar"></span>
+  </div>
+  <div id="heroSlider" class="sanctuary-stage__slider">
+    <?php foreach ($slider as $idx => $slide): ?>
+      <?php
+        $slidePoolItem = $galleryPool[$idx % count($galleryPool)] ?? ['image' => $bishopImage];
+        $slideImg = !empty($slide['image']) ? $slide['image'] : ($slidePoolItem['image'] ?? $bishopImage);
+        $slideLinkOne = trim((string) ($slide['button1_link'] ?? ''));
+        $slideLinkTwo = trim((string) ($slide['button2_link'] ?? ''));
+        $slideTone = trim((string) ($slide['background_style'] ?? 'brand'));
+      ?>
+      <article class="hero-slide-item <?php echo $idx === 0 ? 'active' : ''; ?>" data-slide-index="<?php echo $idx; ?>">
+        <div class="hero-slide-item__visual">
+          <img
+            src="<?php echo htmlspecialchars($slideImg); ?>"
+            alt="<?php echo htmlspecialchars($slide['title']); ?>"
+            class="hero-slide-item__image">
+          <div class="hero-slide-item__overlay hero-slide-item__overlay--<?php echo htmlspecialchars(in_array($slideTone, ['brand', 'slate', 'gradient'], true) ? $slideTone : 'brand'); ?>"></div>
         </div>
-        <div class="sanctuary-copy__meta grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-          <div>
-            <span>Sunday Gathering</span>
-            <strong><?php echo htmlspecialchars(($footerData['service_times'][0]['day'] ?? 'Sunday Service') . ' · ' . ($footerData['service_times'][0]['time'] ?? '9:00 AM')); ?></strong>
-          </div>
-          <div>
-            <span>Location</span>
-            <strong><?php echo htmlspecialchars($footerData['contact']['address'] ?? 'Eldoret, Kenya'); ?></strong>
-          </div>
-          <div class="homepage-mobile-secondary">
-            <span>Atmosphere</span>
-            <strong>Warm worship. Real prayer.</strong>
-          </div>
-          <?php if ($nextEvent): ?>
-          <div class="homepage-mobile-secondary">
-            <span>Next Gathering</span>
-            <strong><?php echo htmlspecialchars($nextEvent['title'] ?? 'Upcoming Event'); ?></strong>
-            <p class="text-[0.7rem] mt-1 text-brand-200 font-mono" data-event-at="<?php echo htmlspecialchars((string) ($nextEvent['event_at'] ?? '')); ?>"></p>
-          </div>
-          <?php endif; ?>
-        </div>
-      </div>
-
-      <div class="sanctuary-orbit homepage-mobile-secondary scroll-reveal scroll-reveal--media" style="--reveal-delay: 0.16s;">
-        <div class="sanctuary-feature relative overflow-hidden h-full group">
-          <div class="hero-slider-progress" aria-hidden="true">
-            <span id="heroSliderProgressBar" class="hero-slider-progress__bar"></span>
-          </div>
-          <div id="heroSlider" class="relative w-full aspect-video md:aspect-[16/10]">
-            <?php foreach ($slider as $idx => $slide): ?>
-              <?php 
-                $slidePoolItem = $galleryPool[$idx % count($galleryPool)] ?? ['image' => $bishopImage];
-                $slideImg = !empty($slide['image']) ? $slide['image'] : ($slidePoolItem['image'] ?? $bishopImage);
-                $slideLinkOne = trim((string) ($slide['button1_link'] ?? ''));
-                $slideLinkTwo = trim((string) ($slide['button2_link'] ?? ''));
-                $slideTone = trim((string) ($slide['background_style'] ?? 'brand'));
-              ?>
-              <div class="hero-slide-item absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out <?php echo $idx === 0 ? 'active opacity-100' : ''; ?>" data-slide-index="<?php echo $idx; ?>">
-                <div class="absolute inset-0 z-10 hero-slide-item__overlay hero-slide-item__overlay--<?php echo htmlspecialchars(in_array($slideTone, ['brand', 'slate', 'gradient'], true) ? $slideTone : 'brand'); ?>"></div>
-                <img src="<?php echo htmlspecialchars($slideImg); ?>" 
-                     alt="<?php echo htmlspecialchars($slide['title']); ?>" 
-                     class="w-full h-full object-cover">
-                
-                <div class="absolute inset-0 z-20 flex flex-col justify-end p-6 md:p-8">
-                  <div class="hero-slide-item__content">
-                    <span class="sanctuary-feature__tag !text-brand-400"><?php echo htmlspecialchars($slide['subtitle'] ?? 'Our Vision'); ?></span>
-                    <strong class="text-white text-xl md:text-2xl lg:text-3xl block mb-2 leading-tight"><?php echo htmlspecialchars($slide['title']); ?></strong>
-                    <p class="text-slate-200 text-sm md:text-base max-w-xl"><?php echo htmlspecialchars($slide['description'] ?? ''); ?></p>
-                    <?php if ($slideLinkOne !== '' || $slideLinkTwo !== ''): ?>
-                    <div class="hero-slide-item__actions">
-                      <?php if ($slideLinkOne !== ''): ?>
-                      <a href="<?php echo htmlspecialchars($slideLinkOne); ?>" class="hero-slide-item__action hero-slide-item__action--primary">
-                        <?php echo htmlspecialchars($slide['button1_text'] ?? 'Learn More'); ?>
-                      </a>
-                      <?php endif; ?>
-                      <?php if ($slideLinkTwo !== ''): ?>
-                      <a href="<?php echo htmlspecialchars($slideLinkTwo); ?>" class="hero-slide-item__action hero-slide-item__action--secondary">
-                        <?php echo htmlspecialchars($slide['button2_text'] ?? 'Explore'); ?>
-                      </a>
-                      <?php endif; ?>
-                    </div>
-                    <?php endif; ?>
-                  </div>
-                </div>
+        <div class="hero-slide-item__shell">
+          <div class="max-w-[1280px] mx-auto px-4 hero-slide-item__layout">
+            <div class="hero-slide-item__copy">
+              <span class="sanctuary-kicker"><?php echo htmlspecialchars($slide['subtitle'] ?? 'Welcome Home'); ?></span>
+              <h1 class="hero-slide-item__title"><?php echo htmlspecialchars($slide['title'] ?? 'Redeemed Gospel Church Eldoret'); ?></h1>
+              <p class="hero-slide-item__lead"><?php echo htmlspecialchars($slide['description'] ?? ($footerData['church']['mission'] ?? 'Join our community of faith as we seek to worship God, grow in His grace, and serve the people of Eldoret and beyond.')); ?></p>
+              <div class="hero-slide-item__actions">
+                <?php if ($slideLinkOne !== ''): ?>
+                <a href="<?php echo htmlspecialchars($slideLinkOne); ?>" class="hero-slide-item__action hero-slide-item__action--primary">
+                  <?php echo htmlspecialchars($slide['button1_text'] ?? 'Plan Your Visit'); ?>
+                </a>
+                <?php endif; ?>
+                <?php if ($slideLinkTwo !== ''): ?>
+                <a href="<?php echo htmlspecialchars($slideLinkTwo); ?>" class="hero-slide-item__action hero-slide-item__action--secondary">
+                  <?php echo htmlspecialchars($slide['button2_text'] ?? 'Watch Sermons'); ?>
+                </a>
+                <?php endif; ?>
               </div>
-            <?php endforeach; ?>
-          </div>
-          
-          <!-- Slider Navigation Controls -->
-          <div class="absolute bottom-4 right-4 z-30 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <button id="heroPrev" type="button" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-colors">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-            </button>
-            <button id="heroNext" type="button" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-colors">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            </button>
-          </div>
-          <!-- Progress Dots -->
-          <div class="absolute bottom-4 left-6 z-30 flex gap-1.5">
-            <?php foreach ($slider as $idx => $slide): ?>
-              <div class="hero-dot w-1.5 h-1.5 rounded-full bg-white/30 transition-all duration-300 <?php echo $idx === 0 ? 'active !w-6 !bg-brand-400' : ''; ?>" data-slide-to="<?php echo $idx; ?>"></div>
-            <?php endforeach; ?>
+              <div class="hero-slide-item__info">
+                <span><?php echo htmlspecialchars(($footerData['service_times'][0]['day'] ?? 'Sunday Service') . ' · ' . ($footerData['service_times'][0]['time'] ?? '9:00 AM')); ?></span>
+                <span><?php echo htmlspecialchars($footerData['contact']['address'] ?? 'Eldoret, Kenya'); ?></span>
+                <?php if ($nextEvent): ?>
+                <span><?php echo htmlspecialchars($nextEvent['title'] ?? 'Upcoming Event'); ?></span>
+                <?php endif; ?>
+              </div>
+            </div>
           </div>
         </div>
-
-        <?php if (count($slider) > 1): ?>
-        <div class="hero-slider-tabs" role="tablist" aria-label="Homepage hero slides">
-          <?php foreach ($slider as $idx => $slide): ?>
-          <button
-            type="button"
-            class="hero-tab <?php echo $idx === 0 ? 'active' : ''; ?>"
-            data-slide-to="<?php echo $idx; ?>"
-            role="tab"
-            aria-selected="<?php echo $idx === 0 ? 'true' : 'false'; ?>">
-            <span class="hero-tab__eyebrow"><?php echo htmlspecialchars($slide['subtitle'] ?? 'Our Vision'); ?></span>
-            <strong><?php echo htmlspecialchars($slide['title'] ?? 'Slide'); ?></strong>
-          </button>
-          <?php endforeach; ?>
-        </div>
-        <?php endif; ?>
-      </div>
+      </article>
+    <?php endforeach; ?>
+  </div>
+  <div class="hero-slider-controls">
+    <div class="hero-slider-controls__dots">
+      <?php foreach ($slider as $idx => $slide): ?>
+      <button type="button" class="hero-dot <?php echo $idx === 0 ? 'active' : ''; ?>" data-slide-to="<?php echo $idx; ?>" aria-label="Go to slide <?php echo $idx + 1; ?>"></button>
+      <?php endforeach; ?>
     </div>
-
-    <div class="sanctuary-path homepage-mobile-secondary grid-cols-1 md:grid-cols-3 gap-4 mt-12">
-      <a href="<?php echo rgcUrl('about.php'); ?>" class="sanctuary-path__item scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.08s;">
-        <span>01</span>
-        <strong>Meet The Heart</strong>
-        <p>Discover the vision, values, and leadership behind the ministry.</p>
-      </a>
-      <a href="<?php echo rgcUrl('events.php'); ?>" class="sanctuary-path__item scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.16s;">
-        <span>02</span>
-        <strong>Follow The Rhythm</strong>
-        <p>See the gatherings, moments, and people shaping church life this week.</p>
-      </a>
-      <a href="<?php echo rgcUrl('contact.php'); ?>" class="sanctuary-path__item scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.24s;">
-        <span>03</span>
-        <strong>Take A Next Step</strong>
-        <p>Ask for prayer, plan your visit, or start a conversation with the team.</p>
-      </a>
+    <div class="hero-slider-controls__arrows">
+      <button id="heroPrev" type="button" class="hero-slider-arrow" aria-label="Previous slide">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <button id="heroNext" type="button" class="hero-slider-arrow" aria-label="Next slide">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
     </div>
   </div>
 </section>
@@ -648,50 +581,102 @@ require __DIR__ . '/includes/header.php';
   const sliderRoot = document.getElementById('heroSlider');
   if (!sliderRoot) return;
 
-  const slides = sliderRoot.querySelectorAll('.hero-slide-item');
-  const dots = document.querySelectorAll('.hero-dot');
-  const tabs = document.querySelectorAll('.hero-tab');
+  const slides = Array.from(sliderRoot.querySelectorAll('.hero-slide-item'));
+  const dots = Array.from(document.querySelectorAll('.hero-dot'));
   const prevBtn = document.getElementById('heroPrev');
   const nextBtn = document.getElementById('heroNext');
   const progressBar = document.getElementById('heroSliderProgressBar');
-  
+
   if (slides.length === 0) return;
-  
+
   let current = 0;
   const total = slides.length;
   let autoAdvance = null;
-  
-  function showSlide(index) {
+  let motionToken = 0;
+
+  function syncDots(index) {
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+  }
+
+  function finishState(index) {
     slides.forEach((slide, i) => {
-      if (i === index) {
-        slide.style.opacity = '1';
-        slide.style.visibility = 'visible';
-        slide.classList.add('active');
-      } else {
-        slide.style.opacity = '0';
-        slide.style.visibility = 'hidden';
+      slide.classList.toggle('active', i === index);
+    });
+    syncDots(index);
+  }
+
+  function animateVisual(node, frames, duration) {
+    if (!node || typeof node.animate !== 'function') return null;
+    return node.animate(frames, {
+      duration,
+      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      fill: 'forwards',
+    });
+  }
+
+  function showSlide(index, direction = 'next', immediate = false) {
+    if (index === current && !immediate) return;
+
+    const previous = slides[current];
+    const next = slides[index];
+    const goingForward = direction === 'next';
+
+    motionToken += 1;
+    const token = motionToken;
+
+    if (immediate || !previous || previous === next) {
+      finishState(index);
+      current = index;
+      return;
+    }
+
+    slides.forEach((slide) => {
+      if (slide !== previous && slide !== next) {
         slide.classList.remove('active');
       }
-      slide.style.transition = 'opacity 0.5s ease';
-    });
-    
-    dots.forEach((dot, i) => {
-      if (i === index) {
-        dot.classList.add('active');
-        dot.classList.remove('bg-white/70');
-        dot.classList.add('bg-brand-400');
-      } else {
-        dot.classList.remove('active');
-        dot.classList.remove('bg-brand-400');
-        dot.classList.add('bg-white/70');
+      if (typeof slide.getAnimations === 'function') {
+        slide.getAnimations().forEach((animation) => animation.cancel());
       }
     });
 
-    tabs.forEach((tab, i) => {
-      const active = i === index;
-      tab.classList.toggle('active', active);
-      tab.setAttribute('aria-selected', active ? 'true' : 'false');
-    });
+    previous.classList.add('active');
+    next.classList.add('active');
+
+    const previousVisual = previous.querySelector('.hero-slide-item__visual');
+    const nextVisual = next.querySelector('.hero-slide-item__visual');
+    const previousCopy = previous.querySelector('.hero-slide-item__copy');
+    const nextCopy = next.querySelector('.hero-slide-item__copy');
+
+    const enterFrom = goingForward ? ['100%', '0'] : ['0', '100%'];
+    const leaveTo = goingForward ? ['0', '100%'] : ['100%', '0'];
+
+    animateVisual(nextVisual, [
+      { clipPath: `inset(0 ${enterFrom[0]} 0 ${enterFrom[1]})`, transform: 'scale(1.08)' },
+      { clipPath: 'inset(0 0 0 0)', transform: 'scale(1)' }
+    ], 900);
+
+    animateVisual(previousVisual, [
+      { clipPath: 'inset(0 0 0 0)', transform: 'scale(1)' },
+      { clipPath: `inset(0 ${leaveTo[0]} 0 ${leaveTo[1]})`, transform: 'scale(1.04)' }
+    ], 820);
+
+    animateVisual(nextCopy, [
+      { opacity: 0, transform: `translate3d(${goingForward ? '38px' : '-38px'}, 34px, 0)` },
+      { opacity: 1, transform: 'translate3d(0, 0, 0)' }
+    ], 760);
+
+    animateVisual(previousCopy, [
+      { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+      { opacity: 0, transform: `translate3d(${goingForward ? '-26px' : '26px'}, -14px, 0)` }
+    ], 520);
+
+    window.setTimeout(() => {
+      if (token !== motionToken) return;
+      current = index;
+      finishState(index);
+    }, 920);
   }
 
   function restartTimer() {
@@ -712,40 +697,29 @@ require __DIR__ . '/includes/header.php';
       autoAdvance = setInterval(nextSlide, 6000);
     }
   }
-  
+
   function nextSlide() {
-    current = (current + 1) % total;
-    showSlide(current);
+    showSlide((current + 1) % total, 'next');
     restartTimer();
   }
-  
+
   function prevSlide() {
-    current = (current - 1 + total) % total;
-    showSlide(current);
+    showSlide((current - 1 + total) % total, 'prev');
     restartTimer();
   }
-  
+
   if (prevBtn) prevBtn.addEventListener('click', prevSlide);
   if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-  
+
   dots.forEach((dot, i) => {
     dot.addEventListener('click', () => {
-      current = i;
-      showSlide(current);
+      const direction = i > current ? 'next' : 'prev';
+      showSlide(i, direction);
       restartTimer();
     });
   });
 
-  tabs.forEach((tab, i) => {
-    tab.addEventListener('click', () => {
-      current = i;
-      showSlide(current);
-      restartTimer();
-    });
-  });
-  
-  // Initialize first slide
-  showSlide(0);
+  showSlide(0, 'next', true);
   restartTimer();
 })();
 
@@ -783,15 +757,23 @@ tickCountdowns();
     return;
   }
 
-  const observer = new IntersectionObserver((entries, obs) => {
+  let lastScrollY = window.pageYOffset || window.scrollY || 0;
+  let scrollDirection = 'down';
+
+  window.addEventListener('scroll', () => {
+    const currentY = window.pageYOffset || window.scrollY || 0;
+    scrollDirection = currentY > lastScrollY ? 'down' : 'up';
+    lastScrollY = currentY;
+  }, { passive: true });
+
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-visible');
-      obs.unobserve(entry.target);
+      entry.target.classList.toggle('scroll-reveal--reverse', scrollDirection === 'up');
+      entry.target.classList.toggle('is-visible', entry.isIntersecting);
     });
   }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -60px 0px'
+    threshold: 0.12,
+    rootMargin: '0px 0px -40px 0px'
   });
 
   revealItems.forEach((item) => observer.observe(item));
