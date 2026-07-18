@@ -9,6 +9,14 @@ $gallery = rgcLoadJson('gallery.json', []);
 $error = '';
 $bishopImageMarker = '__BISHOP_IMAGE__';
 $bishopTestimonialMarker = '__BISHOP_QUOTE__|';
+$homepageSpotlight = array_merge([
+  'eyebrow' => 'Bishop Spotlight',
+  'quote' => '',
+  'author' => 'Bishop',
+  'role' => 'Lead Bishop',
+  'cta_text' => 'Meet Our Leadership',
+  'cta_link' => 'about.php',
+], rgcLoadJson('homepage_spotlight.json', []));
 
 function rgcNormalizeIds(array $rows): array {
   $next = 1;
@@ -170,10 +178,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if ($type === 'bishop') {
     if ($action === 'save') {
+      $bishopEyebrow = trim($_POST['bishop_eyebrow'] ?? 'Bishop Spotlight');
       $bishopQuote = trim($_POST['bishop_quote'] ?? '');
       $bishopAuthor = trim($_POST['bishop_author'] ?? 'Bishop');
+      $bishopRole = trim($_POST['bishop_role'] ?? 'Lead Bishop');
+      $bishopCtaText = trim($_POST['bishop_cta_text'] ?? 'Meet Our Leadership');
+      $bishopCtaLink = trim($_POST['bishop_cta_link'] ?? 'about.php');
       if ($bishopAuthor === '') {
         $bishopAuthor = 'Bishop';
+      }
+      if ($bishopEyebrow === '') {
+        $bishopEyebrow = 'Bishop Spotlight';
+      }
+      if ($bishopRole === '') {
+        $bishopRole = 'Lead Bishop';
+      }
+      if ($bishopCtaText === '') {
+        $bishopCtaText = 'Meet Our Leadership';
+      }
+      if ($bishopCtaLink === '') {
+        $bishopCtaLink = 'about.php';
       }
 
       $uploaded = rgcUploadImageFromRequest('bishop_image_file', $error, 'bishop_');
@@ -190,6 +214,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $gallery[$imgIndex]['image'] = $uploaded;
       }
       rgcSaveJson('gallery.json', $gallery);
+      $homepageSpotlight = [
+        'eyebrow' => $bishopEyebrow,
+        'quote' => $bishopQuote,
+        'author' => $bishopAuthor,
+        'role' => $bishopRole,
+        'cta_text' => $bishopCtaText,
+        'cta_link' => $bishopCtaLink,
+      ];
+      rgcSaveJson('homepage_spotlight.json', $homepageSpotlight);
 
       $tIndex = -1;
       foreach ($testimonials as $i => $row) {
@@ -222,8 +255,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $bishopImage = '';
-$bishopQuote = '';
-$bishopAuthor = 'Bishop';
+$bishopQuote = (string) ($homepageSpotlight['quote'] ?? '');
+$bishopAuthor = trim((string) ($homepageSpotlight['author'] ?? 'Bishop')) ?: 'Bishop';
+$bishopEyebrow = trim((string) ($homepageSpotlight['eyebrow'] ?? 'Bishop Spotlight')) ?: 'Bishop Spotlight';
+$bishopRole = trim((string) ($homepageSpotlight['role'] ?? 'Lead Bishop')) ?: 'Lead Bishop';
+$bishopCtaText = trim((string) ($homepageSpotlight['cta_text'] ?? 'Meet Our Leadership')) ?: 'Meet Our Leadership';
+$bishopCtaLink = trim((string) ($homepageSpotlight['cta_link'] ?? 'about.php')) ?: 'about.php';
 foreach ($gallery as $row) {
   if (($row['caption'] ?? '') === $bishopImageMarker) {
     $bishopImage = (string)($row['image'] ?? '');
@@ -233,10 +270,14 @@ foreach ($gallery as $row) {
 foreach ($testimonials as $row) {
   $nameValue = (string)($row['name'] ?? '');
   if (str_starts_with($nameValue, $bishopTestimonialMarker)) {
-    $bishopQuote = (string)($row['message'] ?? '');
-    $bishopAuthor = trim(substr($nameValue, strlen($bishopTestimonialMarker)));
-    if ($bishopAuthor === '') {
-      $bishopAuthor = 'Bishop';
+    if ($bishopQuote === '') {
+      $bishopQuote = (string)($row['message'] ?? '');
+    }
+    if (($homepageSpotlight['author'] ?? '') === '') {
+      $bishopAuthor = trim(substr($nameValue, strlen($bishopTestimonialMarker)));
+      if ($bishopAuthor === '') {
+        $bishopAuthor = 'Bishop';
+      }
     }
     break;
   }
@@ -272,15 +313,29 @@ foreach ($testimonials as $row) {
     <section class="grid xl:grid-cols-2 gap-6">
       <div class="bg-white rounded-xl shadow border border-slate-200 p-6 xl:col-span-2">
         <h2 class="font-semibold text-slate-900 mb-3">Homepage Bishop Spotlight</h2>
-        <p class="text-sm text-slate-500 mb-4">This controls the homepage section with quote on the left and big image on the right.</p>
+        <p class="text-sm text-slate-500 mb-4">This controls the full-width bishop section with large photo, stronger quote styling, and the main button shown on the homepage.</p>
         <form method="post" enctype="multipart/form-data" class="space-y-3 rounded-lg border border-slate-200 p-4 bg-slate-50">
           <?php echo rgcCsrfField('admin_content'); ?>
           <input type="hidden" name="type" value="bishop">
           <input type="hidden" name="action" value="save">
+          <label class="block text-sm font-medium text-slate-700">Section Label</label>
+          <input name="bishop_eyebrow" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-300" value="<?php echo htmlspecialchars($bishopEyebrow); ?>" placeholder="Bishop Spotlight">
           <label class="block text-sm font-medium text-slate-700">Quote</label>
           <textarea name="bishop_quote" rows="3" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-300" placeholder="Enter Bishop quote for homepage"><?php echo htmlspecialchars($bishopQuote); ?></textarea>
           <label class="block text-sm font-medium text-slate-700">Quoted by</label>
           <input name="bishop_author" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-300" value="<?php echo htmlspecialchars($bishopAuthor); ?>" placeholder="Bishop">
+          <label class="block text-sm font-medium text-slate-700">Role / Title</label>
+          <input name="bishop_role" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-300" value="<?php echo htmlspecialchars($bishopRole); ?>" placeholder="Lead Bishop">
+          <div class="grid md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Primary Button Text</label>
+              <input name="bishop_cta_text" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-300" value="<?php echo htmlspecialchars($bishopCtaText); ?>" placeholder="Meet Our Leadership">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Primary Button Link</label>
+              <input name="bishop_cta_link" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-300" value="<?php echo htmlspecialchars($bishopCtaLink); ?>" placeholder="about.php or https://...">
+            </div>
+          </div>
           <label class="block text-sm font-medium text-slate-700">Bishop Image Upload</label>
           <input name="bishop_image_file" type="file" accept="image/*" class="w-full cursor-pointer rounded-2xl border border-dashed border-slate-300 bg-white px-3 py-3 text-sm text-slate-600 file:mr-4 file:rounded-full file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:border-slate-400 hover:file:bg-slate-800">
           <?php if ($bishopImage !== ''): ?>

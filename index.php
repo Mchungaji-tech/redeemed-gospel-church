@@ -70,6 +70,14 @@ $bishopQuoteMarker = '__BISHOP_QUOTE__|';
 $bishopImage = rgcUrl('assets/uploads/gallery_1772215472_118d5f.jpg');
 $bishopQuote = 'Prayer is not our last option. It is our first response and our greatest strength.';
 $bishopAuthor = 'Bishop';
+$homepageSpotlight = array_merge([
+  'eyebrow' => 'Bishop Spotlight',
+  'quote' => '',
+  'author' => '',
+  'role' => 'Lead Bishop',
+  'cta_text' => 'Meet Our Leadership',
+  'cta_link' => 'about.php',
+], rgcLoadJson('homepage_spotlight.json', []));
 $publicGallery = [];
 $publicTestimonials = [];
 $footerData = rgcLoadJson('footer.json', []);
@@ -138,7 +146,7 @@ if (!$mainVideoSermon) {
 $homeMinistries = array_slice($ministries, 0, 3);
 $homeProjects = array_slice($projects, 0, 3);
 $homeTestimonials = array_slice($publicTestimonials, 0, 2);
-$homeGallery = array_slice($publicGallery, 0, 4);
+$homeGallery = array_slice($publicGallery, 0, 6);
 $heroBackground = $homeGallery[0]['image'] ?? $bishopImage;
 $nextEvent = $displayEvents[0] ?? null;
 $galleryPool = !empty($publicGallery) ? array_values($publicGallery) : [['image' => $bishopImage, 'caption' => 'Redeemed Gospel Church']];
@@ -161,6 +169,17 @@ if (empty($slider)) {
 
 $leadSermon = $featuredSermons[0] ?? null;
 $secondarySermons = array_slice($featuredSermons, 1, 2);
+$bishopQuote = trim((string) ($homepageSpotlight['quote'] ?? '')) !== '' ? trim((string) $homepageSpotlight['quote']) : $bishopQuote;
+$bishopAuthor = trim((string) ($homepageSpotlight['author'] ?? '')) !== '' ? trim((string) $homepageSpotlight['author']) : $bishopAuthor;
+$bishopRole = trim((string) ($homepageSpotlight['role'] ?? 'Lead Bishop')) ?: 'Lead Bishop';
+$bishopEyebrow = trim((string) ($homepageSpotlight['eyebrow'] ?? 'Bishop Spotlight')) ?: 'Bishop Spotlight';
+$bishopCtaText = trim((string) ($homepageSpotlight['cta_text'] ?? 'Meet Our Leadership')) ?: 'Meet Our Leadership';
+$bishopCtaLinkRaw = trim((string) ($homepageSpotlight['cta_link'] ?? 'about.php'));
+$bishopCtaLink = $bishopCtaLinkRaw !== '' && preg_match('#^https?://#i', $bishopCtaLinkRaw)
+  ? $bishopCtaLinkRaw
+  : rgcUrl($bishopCtaLinkRaw !== '' ? $bishopCtaLinkRaw : 'about.php');
+$experienceImage = $galleryPool[1]['image'] ?? $heroBackground;
+$eventBackdrop = $galleryPool[2]['image'] ?? $heroBackground;
 
 require __DIR__ . '/includes/header.php';
 ?>
@@ -194,10 +213,10 @@ require __DIR__ . '/includes/header.php';
   </form>
 </div>
 
-<section class="sanctuary-stage" style="--hero-image: url('<?php echo htmlspecialchars($heroBackground); ?>');">
+<section class="sanctuary-stage scroll-reveal" style="--hero-image: url('<?php echo htmlspecialchars($heroBackground); ?>'); --reveal-delay: 0.02s;">
   <div class="max-w-[1280px] mx-auto px-4 pt-10 pb-14 md:pt-16 md:pb-24">
     <div class="sanctuary-stage__grid">
-      <div class="sanctuary-copy text-center md:text-left">
+      <div class="sanctuary-copy text-center md:text-left scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.08s;">
         <span class="sanctuary-kicker">Not Just A Church Service</span>
         <h1 class="sanctuary-copy__title sanctuary-copy__title--desktop text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">Step into a living story of worship, healing, and belonging.</h1>
         <h1 class="sanctuary-copy__title sanctuary-copy__title--mobile text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">Worship, prayer, and belonging.</h1>
@@ -230,7 +249,7 @@ require __DIR__ . '/includes/header.php';
         </div>
       </div>
 
-      <div class="sanctuary-orbit homepage-mobile-secondary">
+      <div class="sanctuary-orbit homepage-mobile-secondary scroll-reveal scroll-reveal--media" style="--reveal-delay: 0.16s;">
         <div class="sanctuary-feature relative overflow-hidden h-full group">
           <div class="hero-slider-progress" aria-hidden="true">
             <span id="heroSliderProgressBar" class="hero-slider-progress__bar"></span>
@@ -311,17 +330,17 @@ require __DIR__ . '/includes/header.php';
     </div>
 
     <div class="sanctuary-path homepage-mobile-secondary grid-cols-1 md:grid-cols-3 gap-4 mt-12">
-      <a href="<?php echo rgcUrl('about.php'); ?>" class="sanctuary-path__item">
+      <a href="<?php echo rgcUrl('about.php'); ?>" class="sanctuary-path__item scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.08s;">
         <span>01</span>
         <strong>Meet The Heart</strong>
         <p>Discover the vision, values, and leadership behind the ministry.</p>
       </a>
-      <a href="<?php echo rgcUrl('events.php'); ?>" class="sanctuary-path__item">
+      <a href="<?php echo rgcUrl('events.php'); ?>" class="sanctuary-path__item scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.16s;">
         <span>02</span>
         <strong>Follow The Rhythm</strong>
         <p>See the gatherings, moments, and people shaping church life this week.</p>
       </a>
-      <a href="<?php echo rgcUrl('contact.php'); ?>" class="sanctuary-path__item">
+      <a href="<?php echo rgcUrl('contact.php'); ?>" class="sanctuary-path__item scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.24s;">
         <span>03</span>
         <strong>Take A Next Step</strong>
         <p>Ask for prayer, plan your visit, or start a conversation with the team.</p>
@@ -330,22 +349,22 @@ require __DIR__ . '/includes/header.php';
   </div>
 </section>
 
-<section class="mobile-home-shortcuts">
+<section class="mobile-home-shortcuts scroll-reveal" style="--reveal-delay: 0.08s;">
   <div class="max-w-[1280px] mx-auto px-4">
     <div class="mobile-home-shortcuts__grid">
-      <a href="<?php echo rgcUrl('contact.php'); ?>" class="mobile-home-shortcuts__card">
+      <a href="<?php echo rgcUrl('contact.php'); ?>" class="mobile-home-shortcuts__card scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.06s;">
         <span>Visit</span>
         <strong>Plan Your Visit</strong>
       </a>
-      <a href="<?php echo rgcUrl('sermons.php'); ?>" class="mobile-home-shortcuts__card">
+      <a href="<?php echo rgcUrl('sermons.php'); ?>" class="mobile-home-shortcuts__card scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.12s;">
         <span>Watch</span>
         <strong>Latest Sermon</strong>
       </a>
-      <a href="<?php echo rgcUrl('contact.php'); ?>" class="mobile-home-shortcuts__card">
+      <a href="<?php echo rgcUrl('contact.php'); ?>" class="mobile-home-shortcuts__card scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.18s;">
         <span>Prayer</span>
         <strong>Send Request</strong>
       </a>
-      <a href="<?php echo rgcUrl('donate.php'); ?>" class="mobile-home-shortcuts__card">
+      <a href="<?php echo rgcUrl('donate.php'); ?>" class="mobile-home-shortcuts__card scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.24s;">
         <span>Support</span>
         <strong>Support the Mission</strong>
       </a>
@@ -354,9 +373,9 @@ require __DIR__ . '/includes/header.php';
 </section>
 
 <?php if ($nextEvent): ?>
-<section class="mobile-home-event">
+<section class="mobile-home-event scroll-reveal" style="--reveal-delay: 0.12s;">
   <div class="max-w-[1280px] mx-auto px-4">
-    <a href="<?php echo rgcUrl('events.php'); ?>" class="mobile-home-event__card">
+    <a href="<?php echo rgcUrl('events.php'); ?>" class="mobile-home-event__card scroll-reveal scroll-reveal--media" style="--reveal-delay: 0.14s;">
       <span class="mobile-home-event__eyebrow">Featured Event</span>
       <strong><?php echo htmlspecialchars($nextEvent['title'] ?? 'Upcoming Event'); ?></strong>
       <p><?php echo htmlspecialchars(date('M d, Y · g:i A', strtotime((string) ($nextEvent['event_at'] ?? 'now'))) . ' · ' . ($nextEvent['location'] ?? 'Sanctuary')); ?></p>
@@ -365,91 +384,78 @@ require __DIR__ . '/includes/header.php';
 </section>
 <?php endif; ?>
 
-<section class="section-padding pt-0 homepage-mobile-secondary">
-  <div class="max-w-[1280px] mx-auto px-4">
-    <article class="story-card story-card--arrival p-12 md:p-20 rounded-[3rem] bg-white shadow-2xl border border-slate-100 text-center max-w-5xl mx-auto">
-      <span class="story-card__eyebrow">The Experience</span>
-      <h2 class="text-4xl md:text-6xl font-display font-bold mt-6 leading-tight">Church should feel like an exhale, not pressure.</h2>
-      <p class="text-xl text-slate-500 mt-6 leading-relaxed max-w-3xl mx-auto">We designed this journey for people who want beauty, truth, prayer, and a place to belong without pretense.</p>
-      <div class="grid md:grid-cols-3 gap-8 mt-16 text-left">
-        <div class="p-8 rounded-2xl bg-slate-50 border border-slate-100">
-          <strong class="text-xl block mb-2 text-slate-900">Come Curious</strong>
-          <p class="text-slate-500">There is room for questions, fresh starts, and honest faith.</p>
-        </div>
-        <div class="p-8 rounded-2xl bg-slate-50 border border-slate-100">
-          <strong class="text-xl block mb-2 text-slate-900">Bring Family</strong>
-          <p class="text-slate-500">Every generation matters and has a place in the room.</p>
-        </div>
-        <div class="p-8 rounded-2xl bg-slate-50 border border-slate-100">
-          <strong class="text-xl block mb-2 text-slate-900">Leave Renewed</strong>
-          <p class="text-slate-500">Our goal is practical hope, not religious performance.</p>
-        </div>
+<section class="homepage-mobile-secondary">
+  <div class="immersion-split">
+    <div class="immersion-split__media scroll-reveal scroll-reveal--media" style="--immersive-image: url('<?php echo htmlspecialchars($experienceImage); ?>');">
+      <div class="immersion-split__media-copy">
+        <span class="story-card__eyebrow">The Experience</span>
+        <strong>A calm, prayerful atmosphere where people meet Jesus and feel at home.</strong>
       </div>
-    </article>
+    </div>
+    <div class="immersion-split__panel scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.12s;">
+      <span class="story-card__eyebrow">What To Expect</span>
+      <h2>Let the image hit first, then the invitation.</h2>
+      <p>From the first look to the final section, the homepage now tells a more visual story. Worship spaces, people, and church life lead the experience before the copy fills in the meaning.</p>
+      <div class="immersion-split__points">
+        <article>
+          <strong>Come Curious</strong>
+          <p>Questions, first visits, and fresh starts all belong here.</p>
+        </article>
+        <article>
+          <strong>Bring Family</strong>
+          <p>Adults, youth, and children all find a place to settle in.</p>
+        </article>
+        <article>
+          <strong>Leave Renewed</strong>
+          <p>The goal is practical hope, not religious pressure.</p>
+        </article>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="section-padding bg-slate-50 homepage-mobile-secondary">
-  <div class="max-w-[1280px] mx-auto px-4">
-    <article class="p-12 md:p-20 rounded-[3rem] bg-white shadow-xl border border-slate-200/60">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-        <div class="max-w-2xl">
-          <span class="story-card__eyebrow">The Calendar</span>
-          <h2 class="text-4xl md:text-6xl font-display font-bold mt-4 leading-tight">Gathering together.</h2>
-          <p class="text-lg text-slate-500 mt-4">Join us for upcoming moments of worship, fellowship, and growth.</p>
-        </div>
-        <a href="<?php echo rgcUrl('events.php'); ?>" class="btn btn-outline h-fit">Explore Full Calendar</a>
+<?php if ($nextEvent): ?>
+<section class="featured-event-cover homepage-mobile-secondary scroll-reveal scroll-reveal--media" style="--cover-image: url('<?php echo htmlspecialchars($eventBackdrop); ?>');">
+  <div class="max-w-[1280px] mx-auto px-4 featured-event-cover__shell">
+    <div class="featured-event-cover__panel scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.14s;">
+      <span class="story-card__eyebrow !text-brand-200">Featured Event</span>
+      <h2><?php echo htmlspecialchars($nextEvent['title'] ?? 'Upcoming Event'); ?></h2>
+      <p><?php echo htmlspecialchars(date('l, M d, Y', strtotime((string) ($nextEvent['event_at'] ?? 'now')))); ?> · <?php echo htmlspecialchars(date('g:i A', strtotime((string) ($nextEvent['event_at'] ?? 'now')))); ?></p>
+      <p><?php echo htmlspecialchars($nextEvent['location'] ?? 'Redeemed Gospel Church Eldoret'); ?></p>
+      <div class="featured-event-cover__actions">
+        <a href="<?php echo rgcUrl('events.php'); ?>" class="btn btn-primary">View All Events</a>
+        <a href="<?php echo rgcUrl('contact.php'); ?>" class="btn btn-outline">Ask About This Event</a>
       </div>
-      <div class="grid lg:grid-cols-3 gap-6">
-        <?php foreach ($displayEvents as $event): ?>
-        <a href="<?php echo htmlspecialchars(rgcUrl('events.php')); ?>" class="group block p-8 rounded-3xl bg-slate-50 border border-slate-200/50 hover:bg-white hover:shadow-xl transition-all">
-          <div class="flex items-center gap-4 mb-6">
-            <div class="w-16 h-16 rounded-2xl bg-brand-500 flex flex-col items-center justify-center text-white">
-              <span class="text-[0.6rem] font-bold uppercase tracking-widest opacity-80"><?php echo htmlspecialchars(date('M', strtotime((string) $event['event_at']))); ?></span>
-              <span class="text-2xl font-bold leading-none"><?php echo htmlspecialchars(date('d', strtotime((string) $event['event_at']))); ?></span>
-            </div>
-            <div class="h-10 w-px bg-slate-200"></div>
-            <span class="text-sm font-bold text-brand-600 uppercase tracking-widest">Upcoming</span>
-          </div>
-          <h3 class="text-2xl font-bold text-slate-900 group-hover:text-brand-600 transition-colors"><?php echo htmlspecialchars($event['title'] ?? 'Upcoming Event'); ?></h3>
-          <p class="text-slate-500 mt-4"><?php echo htmlspecialchars(date('g:i A', strtotime((string) $event['event_at'])) . ' · ' . ($event['location'] ?? 'Sanctuary')); ?></p>
-        </a>
-        <?php endforeach; ?>
-      </div>
-    </article>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
+
+<section class="bishop-band scroll-reveal">
+  <div class="bishop-band__left scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.12s;">
+    <span class="bishop-kicker"><?php echo htmlspecialchars($bishopEyebrow); ?></span>
+    <blockquote class="bishop-feature__text">"<?php echo htmlspecialchars($bishopQuote); ?>"</blockquote>
+    <p class="bishop-feature__author"><?php echo htmlspecialchars($bishopAuthor); ?></p>
+    <p class="bishop-feature__role"><?php echo htmlspecialchars($bishopRole); ?></p>
+    <div class="bishop-band__actions">
+      <a href="<?php echo htmlspecialchars($bishopCtaLink); ?>" class="btn btn-primary"><?php echo htmlspecialchars($bishopCtaText); ?></a>
+      <a href="<?php echo rgcUrl('contact.php'); ?>" class="btn btn-outline">Request Prayer</a>
+    </div>
+  </div>
+  <div class="bishop-band__right scroll-reveal scroll-reveal--media">
+    <img src="<?php echo htmlspecialchars($bishopImage); ?>" class="bishop-feature__photo bishop-parallax" alt="<?php echo htmlspecialchars($bishopAuthor); ?>">
   </div>
 </section>
 
-<section class="section-padding bg-brand-900 overflow-hidden homepage-mobile-secondary">
-  <div class="max-w-[1280px] mx-auto px-4 relative">
-    <div class="absolute top-0 right-0 w-96 h-96 bg-brand-500/10 rounded-full blur-[120px] -mr-48 -mt-48"></div>
-    <article class="max-w-5xl">
-      <span class="story-card__eyebrow !text-brand-300">The Heart</span>
-      <blockquote class="text-4xl md:text-7xl font-display font-bold text-white mt-8 leading-tight">
-        "<?php echo htmlspecialchars($bishopQuote); ?>"
-      </blockquote>
-      <div class="mt-12 flex items-center gap-6">
-        <div class="w-20 h-20 rounded-full border-2 border-brand-400 p-1">
-          <img src="<?php echo htmlspecialchars($bishopImage); ?>" class="w-full h-full object-cover rounded-full" alt="">
-        </div>
-        <div>
-          <p class="text-xl font-bold text-white"><?php echo htmlspecialchars($bishopAuthor); ?></p>
-          <p class="text-brand-300 uppercase tracking-widest text-xs font-bold mt-1">Lead Bishop</p>
-        </div>
-      </div>
-    </article>
-  </div>
-</section>
-
-<section class="section-padding bg-white">
+<section class="section-padding bg-white scroll-reveal" style="--reveal-delay: 0.08s;">
   <div class="max-w-[1280px] mx-auto px-4">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-      <div class="max-w-2xl">
+      <div class="max-w-2xl scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.08s;">
         <span class="story-card__eyebrow">The Messages</span>
         <h2 class="text-4xl md:text-6xl font-display font-bold mt-4 leading-tight">Truth for Monday.</h2>
         <p class="text-lg text-slate-500 mt-4">Experience teachings that bridge the gap between biblical truth and daily life.</p>
       </div>
-      <a href="<?php echo rgcUrl('sermons.php'); ?>" class="btn btn-primary h-fit homepage-mobile-secondary">Watch All Sermons</a>
+      <a href="<?php echo rgcUrl('sermons.php'); ?>" class="btn btn-primary h-fit homepage-mobile-secondary scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.14s;">Watch All Sermons</a>
     </div>
 
     <?php if ($leadSermon): ?>
@@ -461,7 +467,7 @@ require __DIR__ . '/includes/header.php';
       }
     ?>
     <div class="sermon-showcase">
-      <a href="<?php echo htmlspecialchars(rgcUrl('sermons.php?id=' . (int) ($leadSermon['id'] ?? 0))); ?>" class="sermon-showcase__lead group">
+      <a href="<?php echo htmlspecialchars(rgcUrl('sermons.php?id=' . (int) ($leadSermon['id'] ?? 0))); ?>" class="sermon-showcase__lead group scroll-reveal scroll-reveal--media" style="--reveal-delay: 0.12s;">
         <div class="sermon-showcase__lead-media">
           <img src="<?php echo htmlspecialchars($leadSermonThumb); ?>" alt="<?php echo htmlspecialchars($leadSermon['title'] ?? 'Sermon'); ?>" class="sermon-showcase__lead-image">
           <div class="sermon-showcase__lead-overlay"></div>
@@ -487,7 +493,7 @@ require __DIR__ . '/includes/header.php';
       </a>
 
       <div class="sermon-showcase__stack homepage-mobile-secondary">
-        <?php foreach ($secondarySermons as $sermon): ?>
+        <?php foreach ($secondarySermons as $secondaryIndex => $sermon): ?>
         <?php
           $sermonDate = (string) ($sermon['scheduled_at'] ?? $sermon['created_at'] ?? '');
           $sermonThumb = getHomeYoutubeThumbnail((string) ($sermon['youtube_url'] ?? ''));
@@ -495,7 +501,7 @@ require __DIR__ . '/includes/header.php';
             $sermonThumb = $heroBackground;
           }
         ?>
-        <a href="<?php echo htmlspecialchars(rgcUrl('sermons.php?id=' . (int) ($sermon['id'] ?? 0))); ?>" class="sermon-stack-card group">
+        <a href="<?php echo htmlspecialchars(rgcUrl('sermons.php?id=' . (int) ($sermon['id'] ?? 0))); ?>" class="sermon-stack-card group scroll-reveal scroll-reveal--text" style="--reveal-delay: <?php echo htmlspecialchars(number_format(0.18 + $secondaryIndex * 0.08, 2)); ?>s;">
           <div class="sermon-stack-card__thumb">
             <img src="<?php echo htmlspecialchars($sermonThumb); ?>" alt="<?php echo htmlspecialchars($sermon['title'] ?? 'Sermon'); ?>" class="sermon-stack-card__image">
           </div>
@@ -550,17 +556,17 @@ require __DIR__ . '/includes/header.php';
   </div>
 </div>
 
-<section class="section-padding pt-0">
+<section class="section-padding pt-0 scroll-reveal" style="--reveal-delay: 0.08s;">
   <div class="max-w-[1280px] mx-auto px-4">
     <div class="mosaic-wall grid-cols-1 md:grid-cols-2 gap-6">
-      <article class="mosaic-wall__intro homepage-mobile-secondary p-8 rounded-3xl bg-white shadow-lg border border-slate-100">
+      <article class="mosaic-wall__intro homepage-mobile-secondary p-8 rounded-3xl bg-white shadow-lg border border-slate-100 scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.08s;">
         <span class="story-card__eyebrow">Church Pulse</span>
         <h2 class="text-3xl md:text-4xl font-display font-bold mt-3 leading-tight">Belong in community. Serve with purpose. Carry hope into the city.</h2>
         <p class="text-lg text-slate-600 mt-4 leading-relaxed">Instead of treating church like a weekly appointment, we see it as a living rhythm of worship, formation, outreach, and practical love.</p>
       </article>
 
       <div class="mosaic-wall__columns">
-        <article class="mosaic-panel">
+        <article class="mosaic-panel scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.14s;">
           <div class="pulse-card__header">
             <div>
               <span class="story-card__eyebrow">Ministries</span>
@@ -570,7 +576,7 @@ require __DIR__ . '/includes/header.php';
           </div>
           <div class="mosaic-mini-list">
             <?php foreach ($homeMinistries as $index => $ministry): ?>
-            <article class="mosaic-mini-list__item <?php echo $index > 1 ? 'homepage-mobile-secondary' : ''; ?>">
+            <article class="mosaic-mini-list__item <?php echo $index > 1 ? 'homepage-mobile-secondary' : ''; ?> scroll-reveal scroll-reveal--text" style="--reveal-delay: <?php echo htmlspecialchars(number_format(0.18 + $index * 0.06, 2)); ?>s;">
               <strong><?php echo htmlspecialchars($ministry['name'] ?? 'Ministry'); ?></strong>
               <p><?php echo htmlspecialchars($ministry['description'] ?? ''); ?></p>
             </article>
@@ -578,7 +584,7 @@ require __DIR__ . '/includes/header.php';
           </div>
         </article>
 
-        <article class="mosaic-panel mosaic-panel--accent homepage-mobile-secondary">
+        <article class="mosaic-panel mosaic-panel--accent homepage-mobile-secondary scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.2s;">
           <div class="pulse-card__header">
             <div>
               <span class="story-card__eyebrow">Impact</span>
@@ -587,8 +593,8 @@ require __DIR__ . '/includes/header.php';
             <a href="<?php echo rgcUrl('projects.php'); ?>" class="home-panel__link">See projects</a>
           </div>
           <div class="mosaic-mini-list">
-            <?php foreach ($homeProjects as $project): ?>
-            <article class="mosaic-mini-list__item home-project-card">
+            <?php foreach ($homeProjects as $projectIndex => $project): ?>
+            <article class="mosaic-mini-list__item home-project-card scroll-reveal scroll-reveal--text" style="--reveal-delay: <?php echo htmlspecialchars(number_format(0.22 + $projectIndex * 0.06, 2)); ?>s;">
               <span class="home-project-card__status"><?php echo htmlspecialchars(ucwords(str_replace('_', ' ', (string) ($project['status'] ?? 'community outreach')))); ?></span>
               <strong><?php echo htmlspecialchars($project['title'] ?? 'Project'); ?></strong>
               <p><?php echo htmlspecialchars($project['description'] ?? ''); ?></p>
@@ -602,16 +608,16 @@ require __DIR__ . '/includes/header.php';
 </section>
 
 <?php if (!empty($homeTestimonials)): ?>
-<section class="section-padding pt-0 homepage-mobile-secondary">
+<section class="section-padding pt-0 homepage-mobile-secondary scroll-reveal" style="--reveal-delay: 0.08s;">
   <div class="max-w-[1280px] mx-auto px-4">
     <div class="echo-strip grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="echo-strip__intro p-8 rounded-3xl bg-white shadow-lg border border-slate-100">
+      <div class="echo-strip__intro p-8 rounded-3xl bg-white shadow-lg border border-slate-100 scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.08s;">
         <span class="story-card__eyebrow">Voices Of Grace</span>
         <h2 class="text-3xl md:text-4xl font-display font-bold mt-3 leading-tight">Stories that sound like freedom.</h2>
       </div> 
       <div class="echo-strip__grid">
-        <?php foreach ($homeTestimonials as $testimonial): ?>
-        <blockquote class="echo-card">
+        <?php foreach ($homeTestimonials as $testimonialIndex => $testimonial): ?>
+        <blockquote class="echo-card scroll-reveal scroll-reveal--text" style="--reveal-delay: <?php echo htmlspecialchars(number_format(0.16 + $testimonialIndex * 0.08, 2)); ?>s;">
           <p>"<?php echo htmlspecialchars($testimonial['message'] ?? ''); ?>"</p>
           <cite>— <?php echo htmlspecialchars($testimonial['name'] ?? 'Church Member'); ?></cite>
         </blockquote>
@@ -622,9 +628,9 @@ require __DIR__ . '/includes/header.php';
 </section>
 <?php endif; ?>
 
-<section class="section-padding pt-0 homepage-mobile-secondary">
+<section class="section-padding pt-0 homepage-mobile-secondary scroll-reveal" style="--reveal-delay: 0.08s;">
   <div class="max-w-[1120px] mx-auto px-4">
-    <div class="summit-cta p-10 rounded-3xl bg-white shadow-lg border border-slate-100 text-center">
+    <div class="summit-cta p-10 rounded-3xl bg-white shadow-lg border border-slate-100 text-center scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.1s;">
       <span class="story-card__eyebrow">Begin Here</span>
       <h2 class="text-4xl md:text-5xl font-display font-bold mt-3 leading-tight">You do not have to figure faith out alone.</h2>
       <p>Come for worship, ask for prayer, bring your questions, and let this be the start of something deeply life-giving.</p>
@@ -1090,31 +1096,35 @@ tickCountdowns();
 })();
 </script>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
-<section class="section-padding bg-slate-50 homepage-mobile-secondary">
+<?php if (!empty($homeGallery)): ?>
+<section class="gallery-canvas section-padding homepage-mobile-secondary">
   <div class="max-w-[1280px] mx-auto px-4">
-    <div class="text-center max-w-3xl mx-auto mb-20">
-      <span class="story-card__eyebrow">Our Atmosphere</span>
-      <h2 class="text-4xl md:text-6xl font-display font-bold mt-6 leading-tight">Life in the House.</h2>
-      <p class="text-xl text-slate-500 mt-6">A visual journey through our worship, community, and service.</p>
+    <div class="text-center max-w-3xl mx-auto mb-16 scroll-reveal scroll-reveal--text">
+      <span class="story-card__eyebrow !text-brand-200">Life In The House</span>
+      <h2 class="text-4xl md:text-6xl font-display font-bold mt-6 leading-tight text-white">A gallery that moves with the story.</h2>
+      <p class="text-lg text-slate-200 mt-6">As people scroll, the images rise into view first, then the captions complete the moment. It feels more like walking through church life than reading another grid of cards.</p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+    <div class="gallery-river">
       <?php foreach ($homeGallery as $index => $item): ?>
-      <figure class="group">
-        <div class="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-200 shadow-lg border-8 border-white group-hover:shadow-2xl group-hover:-translate-y-2 transition-all duration-500">
+      <article class="gallery-river__card gallery-item scroll-reveal scroll-reveal--media" style="--depth: <?php echo (string) (($index % 3) + 1); ?>; --reveal-delay: <?php echo htmlspecialchars(number_format($index * 0.08, 2)); ?>s;">
+        <div class="gallery-river__media">
           <img
             src="<?php echo htmlspecialchars($item['image']); ?>"
             alt="<?php echo htmlspecialchars($item['caption']); ?>"
-            class="gallery-trigger w-full h-full object-cover cursor-pointer"
+            class="gallery-river__img gallery-trigger"
+            tabindex="0"
+            role="button"
             data-gallery-index="<?php echo $index; ?>"
+            data-gallery-caption="<?php echo htmlspecialchars($item['caption']); ?>"
             data-gallery-src="<?php echo htmlspecialchars($item['image']); ?>"
           >
         </div>
-        <figcaption class="mt-6 text-center">
-          <span class="text-slate-400 text-xs font-bold uppercase tracking-[0.2em]"><?php echo htmlspecialchars($item['caption']); ?></span>
-        </figcaption>
-      </figure>
+        <div class="gallery-river__meta"><?php echo htmlspecialchars($item['caption'] ?: 'Redeemed Gospel Church'); ?></div>
+      </article>
       <?php endforeach; ?>
     </div>
   </div>
 </section>
+<?php endif; ?>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>
