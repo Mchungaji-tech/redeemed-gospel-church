@@ -951,6 +951,103 @@ function rgcPublicUser() {
   return $_SESSION['public_user'] ?? null;
 }
 
+function rgcEnsurePublicMessagesPrivacyColumns(): void {
+  static $checked = false;
+  if ($checked || !rgcDbAvailable()) {
+    return;
+  }
+
+  $checked = true;
+
+  try {
+    rgcDb()->exec("ALTER TABLE public_messages ADD COLUMN IF NOT EXISTS guest_token CHAR(64) NULL AFTER user_id");
+    rgcDb()->exec("ALTER TABLE public_messages ADD COLUMN IF NOT EXISTS admin_seen_at DATETIME NULL AFTER created_at");
+    rgcDb()->exec("ALTER TABLE public_messages ADD INDEX idx_public_messages_guest_token (guest_token)");
+    rgcDb()->exec("ALTER TABLE public_messages ADD INDEX idx_public_messages_admin_seen_at (admin_seen_at)");
+  } catch (Throwable $e) {
+    try {
+      $stmt = rgcDb()->query("SHOW COLUMNS FROM public_messages LIKE 'guest_token'");
+      if (!$stmt->fetch()) {
+        rgcDb()->exec("ALTER TABLE public_messages ADD COLUMN guest_token CHAR(64) NULL AFTER user_id");
+      }
+    } catch (Throwable $ignored) {
+    }
+
+    try {
+      $stmt = rgcDb()->query("SHOW COLUMNS FROM public_messages LIKE 'admin_seen_at'");
+      if (!$stmt->fetch()) {
+        rgcDb()->exec("ALTER TABLE public_messages ADD COLUMN admin_seen_at DATETIME NULL AFTER created_at");
+      }
+    } catch (Throwable $ignored) {
+    }
+
+    try {
+      $idx = rgcDb()->query("SHOW INDEX FROM public_messages WHERE Key_name = 'idx_public_messages_guest_token'");
+      if (!$idx->fetch()) {
+        rgcDb()->exec("ALTER TABLE public_messages ADD INDEX idx_public_messages_guest_token (guest_token)");
+      }
+    } catch (Throwable $ignored) {
+    }
+
+    try {
+      $idx = rgcDb()->query("SHOW INDEX FROM public_messages WHERE Key_name = 'idx_public_messages_admin_seen_at'");
+      if (!$idx->fetch()) {
+        rgcDb()->exec("ALTER TABLE public_messages ADD INDEX idx_public_messages_admin_seen_at (admin_seen_at)");
+      }
+    } catch (Throwable $ignored) {
+    }
+  }
+}
+
+function rgcPublicGuestToken(): string {
+  if (!empty($_SESSION['public_user']['id'])) {
+    return '';
+  }
+
+  if (empty($_SESSION['public_guest_token']) || !is_string($_SESSION['public_guest_token']) || strlen($_SESSION['public_guest_token']) !== 64) {
+    $_SESSION['public_guest_token'] = bin2hex(random_bytes(32));
+  }
+
+  return (string) $_SESSION['public_guest_token'];
+}
+
+function rgcFetchCurrentVisitorMessages(int $limit = 8): array {
+  if (!rgcDbAvailable()) {
+    return [];
+  }
+
+  rgcEnsurePublicMessagesPrivacyColumns();
+  $limit = max(1, min($limit, 25));
+  $user = rgcPublicUser();
+
+  try {
+    if (!empty($user['id'])) {
+      $stmt = rgcDb()->prepare(
+        "SELECT id, type, message, created_at
+         FROM public_messages
+         WHERE user_id = :user_id
+         ORDER BY id DESC
+         LIMIT {$limit}"
+      );
+      $stmt->execute([':user_id' => (int) $user['id']]);
+      return $stmt->fetchAll() ?: [];
+    }
+
+    $guestToken = rgcPublicGuestToken();
+    $stmt = rgcDb()->prepare(
+      "SELECT id, type, message, created_at
+       FROM public_messages
+       WHERE guest_token = :guest_token
+       ORDER BY id DESC
+       LIMIT {$limit}"
+    );
+    $stmt->execute([':guest_token' => $guestToken]);
+    return $stmt->fetchAll() ?: [];
+  } catch (Throwable $e) {
+    return [];
+  }
+}
+
 function rgcPublicRequireLogin(string $returnTo = 'index.php') {
   if (isset($_SESSION['public_user'])) {
     return;

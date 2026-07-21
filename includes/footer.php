@@ -107,8 +107,62 @@ $footerData = rgcLoadJson('footer.json', [
 
   const page = body.dataset.page || '';
   const isTouch = window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  const allowReverseMotion = !isTouch;
   if (isTouch) {
     body.classList.add('touch-device');
+  }
+
+  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const parallaxLayers = Array.from(document.querySelectorAll('.parallax-layer[data-parallax-speed]'));
+  if (!prefersReducedMotion && parallaxLayers.length) {
+    const parallaxIntensity = isTouch ? 0.42 : 1;
+    let parallaxTicking = false;
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function paintParallax() {
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
+      parallaxLayers.forEach((layer) => {
+        const anchor = layer.closest('.parallax-scene') || layer;
+        const rect = anchor.getBoundingClientRect();
+        const center = rect.top + rect.height / 2;
+        const delta = (center - viewportHeight / 2) / viewportHeight;
+        const speed = Number(layer.dataset.parallaxSpeed || 0);
+        const y = clamp(delta * viewportHeight * speed * parallaxIntensity, -72, 72);
+        layer.style.setProperty('--parallax-y', `${y.toFixed(2)}px`);
+      });
+      parallaxTicking = false;
+    }
+
+    function queueParallax() {
+      if (parallaxTicking) return;
+      parallaxTicking = true;
+      window.requestAnimationFrame(paintParallax);
+    }
+
+    window.addEventListener('scroll', queueParallax, { passive: true });
+    window.addEventListener('resize', queueParallax);
+    queueParallax();
+  }
+
+  if (!isTouch) {
+    const galleryTiltCards = Array.from(document.querySelectorAll('.gallery-river__card'));
+    galleryTiltCards.forEach((card) => {
+      card.addEventListener('mousemove', (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = event.clientX - rect.left - rect.width / 2;
+        const y = event.clientY - rect.top - rect.height / 2;
+        const rotateX = (y / rect.height) * 12;
+        const rotateY = (x / rect.width) * -12;
+        card.style.transform = `translateZ(0) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
   }
 
   const skipMotionPages = new Set(['index.php', 'blog.php', 'blog-post.php']);
@@ -156,7 +210,7 @@ $footerData = rgcLoadJson('footer.json', [
 
     const text = heading.textContent.trim();
     const words = text === '' ? [] : text.split(/\s+/);
-    if (words.length === 0 || words.length > 12) {
+    if (isTouch || words.length === 0 || words.length > 12) {
       if (!heading.classList.contains('scroll-reveal')) {
         heading.classList.add('scroll-reveal', 'scroll-reveal--text');
         setRevealDelay(heading, `${Math.min(0.08 + index * 0.02, 0.28).toFixed(2)}s`);
@@ -209,7 +263,7 @@ $footerData = rgcLoadJson('footer.json', [
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      entry.target.classList.toggle('scroll-reveal--reverse', scrollDirection === 'up');
+      entry.target.classList.toggle('scroll-reveal--reverse', allowReverseMotion && scrollDirection === 'up');
       entry.target.classList.toggle('is-visible', entry.isIntersecting);
     });
   }, {

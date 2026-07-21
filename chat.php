@@ -25,9 +25,11 @@ if ($message === '') {
 }
 
 try {
-  $stmt = rgcDb()->prepare('INSERT INTO public_messages (user_id, name, email, type, message, created_at) VALUES (:user_id, :name, :email, :type, :message, NOW())');
+  rgcEnsurePublicMessagesPrivacyColumns();
+  $stmt = rgcDb()->prepare('INSERT INTO public_messages (user_id, guest_token, name, email, type, message, created_at) VALUES (:user_id, :guest_token, :name, :email, :type, :message, NOW())');
   $stmt->execute([
     ':user_id' => $user ? (int) ($user['id'] ?? 0) : null,
+    ':guest_token' => $user ? null : rgcPublicGuestToken(),
     ':name' => $user ? (string) ($user['name'] ?? '') : $name,
     ':email' => $user ? (string) ($user['email'] ?? '') : $email,
     ':type' => 'chat',

@@ -4,14 +4,11 @@ rgcEnforcePublicAccess();
 rgcPublicRequireLogin('user/dashboard.php');
 $u = rgcPublicUser();
 $donations = [];
-$messages = [];
+$messages = rgcFetchCurrentVisitorMessages(10);
 if (rgcDbAvailable()) {
   $stmt = rgcDb()->prepare('SELECT id, amount_cents, currency, note, status, created_at FROM donations WHERE user_id = :uid ORDER BY id DESC LIMIT 10');
   $stmt->execute([':uid' => (int) ($u['id'] ?? 0)]);
   $donations = $stmt->fetchAll();
-  $stmt = rgcDb()->prepare('SELECT id, type, message, created_at FROM public_messages WHERE user_id = :uid ORDER BY id DESC LIMIT 10');
-  $stmt->execute([':uid' => (int) ($u['id'] ?? 0)]);
-  $messages = $stmt->fetchAll();
 }
 ?>
 <!DOCTYPE html>

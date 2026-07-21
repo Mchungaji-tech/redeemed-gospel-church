@@ -125,6 +125,31 @@ function rgcCountRecentSecurityEvents(int $hours = 24): int {
   return (int) $stmt->fetch()['c'];
 }
 
+function rgcCountUnreadPublicChatThreads(): int {
+  if (!rgcDbAvailable()) {
+    return 0;
+  }
+
+  rgcEnsurePublicMessagesPrivacyColumns();
+
+  $sql = "SELECT COUNT(*) AS c
+          FROM (
+            SELECT
+              CASE
+                WHEN user_id IS NOT NULL THEN CONCAT('user:', user_id)
+                WHEN guest_token IS NOT NULL AND guest_token <> '' THEN CONCAT('guest:', guest_token)
+                WHEN email IS NOT NULL AND email <> '' THEN CONCAT('email:', LOWER(email))
+                ELSE CONCAT('message:', id)
+              END AS thread_key
+            FROM public_messages
+            WHERE type = 'chat'
+              AND admin_seen_at IS NULL
+            GROUP BY thread_key
+          ) unread_threads";
+
+  return (int) (rgcDb()->query($sql)->fetch()['c'] ?? 0);
+}
+
 function rgcFormatBytes(int $bytes): string {
   $units = ['B', 'KB', 'MB', 'GB', 'TB'];
   $size = (float) $bytes;

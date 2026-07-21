@@ -180,6 +180,7 @@ $bishopCtaLink = $bishopCtaLinkRaw !== '' && preg_match('#^https?://#i', $bishop
   : rgcUrl($bishopCtaLinkRaw !== '' ? $bishopCtaLinkRaw : 'about.php');
 $experienceImage = $galleryPool[1]['image'] ?? $heroBackground;
 $eventBackdrop = $galleryPool[2]['image'] ?? $heroBackground;
+$chatMessages = rgcFetchCurrentVisitorMessages(6);
 
 require __DIR__ . '/includes/header.php';
 ?>
@@ -195,6 +196,19 @@ require __DIR__ . '/includes/header.php';
       <p class="chat-panel__title">Chat with us</p>
       <button id="chatClose" type="button" class="chat-close" aria-label="Close chat">&times;</button>
     </div>
+    <?php if (!empty($chatMessages)): ?>
+      <div class="chat-panel__history" aria-label="Your recent messages">
+        <p class="chat-panel__eyebrow">Your recent messages</p>
+        <div class="chat-panel__history-list">
+          <?php foreach ($chatMessages as $chatMessage): ?>
+            <article class="chat-bubble chat-bubble--<?php echo htmlspecialchars((string) ($chatMessage['type'] ?? 'chat')); ?>">
+              <p><?php echo nl2br(htmlspecialchars((string) ($chatMessage['message'] ?? ''))); ?></p>
+              <span><?php echo htmlspecialchars(date('M j, g:i a', strtotime((string) ($chatMessage['created_at'] ?? 'now')))); ?></span>
+            </article>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    <?php endif; ?>
     <?php if (!rgcPublicUser()): ?>
       <input name="name" autocomplete="name" class="form-input mb-2" placeholder="Your name">
       <input name="email" type="email" autocomplete="email" autocomplete="email" class="form-input mb-2" placeholder="Email (optional)">
@@ -231,7 +245,9 @@ require __DIR__ . '/includes/header.php';
           <img
             src="<?php echo htmlspecialchars($slideImg); ?>"
             alt="<?php echo htmlspecialchars($slide['title']); ?>"
-            class="hero-slide-item__image">
+            class="hero-slide-item__image parallax-layer"
+            data-parallax-speed="0.16"
+            style="--parallax-scale: 1.12;">
           <div class="hero-slide-item__overlay hero-slide-item__overlay--<?php echo htmlspecialchars(in_array($slideTone, ['brand', 'slate', 'gradient'], true) ? $slideTone : 'brand'); ?>"></div>
         </div>
         <div class="hero-slide-item__shell">
@@ -314,7 +330,8 @@ require __DIR__ . '/includes/header.php';
 
 <section class="homepage-mobile-secondary">
   <div class="immersion-split">
-    <div class="immersion-split__media scroll-reveal scroll-reveal--media" style="--immersive-image: url('<?php echo htmlspecialchars($experienceImage); ?>');">
+    <div class="immersion-split__media parallax-scene scroll-reveal scroll-reveal--media">
+      <div class="immersion-split__media-bg parallax-layer" data-parallax-speed="0.12" style="--immersive-image: url('<?php echo htmlspecialchars($experienceImage); ?>'); --parallax-scale: 1.12;"></div>
       <div class="immersion-split__media-copy">
         <span class="story-card__eyebrow">The Experience</span>
         <strong>A calm, prayerful atmosphere where people meet Jesus and feel at home.</strong>
@@ -343,7 +360,8 @@ require __DIR__ . '/includes/header.php';
 </section>
 
 <?php if ($nextEvent): ?>
-<section class="featured-event-cover homepage-mobile-secondary scroll-reveal scroll-reveal--media" style="--cover-image: url('<?php echo htmlspecialchars($eventBackdrop); ?>');">
+<section class="featured-event-cover homepage-mobile-secondary parallax-scene scroll-reveal scroll-reveal--media">
+  <div class="featured-event-cover__bg parallax-layer" data-parallax-speed="0.1" style="--cover-image: url('<?php echo htmlspecialchars($eventBackdrop); ?>'); --parallax-scale: 1.1;"></div>
   <div class="max-w-[1280px] mx-auto px-4 featured-event-cover__shell">
     <div class="featured-event-cover__panel scroll-reveal scroll-reveal--text" style="--reveal-delay: 0.14s;">
       <span class="story-card__eyebrow !text-brand-200">Featured Event</span>
@@ -371,7 +389,7 @@ require __DIR__ . '/includes/header.php';
     </div>
   </div>
   <div class="bishop-band__right scroll-reveal scroll-reveal--media">
-    <img src="<?php echo htmlspecialchars($bishopImage); ?>" class="bishop-feature__photo bishop-parallax" alt="<?php echo htmlspecialchars($bishopAuthor); ?>">
+    <img src="<?php echo htmlspecialchars($bishopImage); ?>" class="bishop-feature__photo parallax-layer" data-parallax-speed="0.15" style="--parallax-scale: 1.08;" alt="<?php echo htmlspecialchars($bishopAuthor); ?>">
   </div>
 </section>
 
@@ -728,6 +746,7 @@ tickCountdowns();
 (function() {
   const revealItems = document.querySelectorAll('.scroll-reveal');
   if (!revealItems.length) return;
+  const allowReverseMotion = !(window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches);
 
   revealItems.forEach((item) => item.classList.add('reveal-ready'));
 
@@ -747,7 +766,7 @@ tickCountdowns();
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      entry.target.classList.toggle('scroll-reveal--reverse', scrollDirection === 'up');
+      entry.target.classList.toggle('scroll-reveal--reverse', allowReverseMotion && scrollDirection === 'up');
       entry.target.classList.toggle('is-visible', entry.isIntersecting);
     });
   }, {
@@ -756,73 +775,6 @@ tickCountdowns();
   });
 
   revealItems.forEach((item) => observer.observe(item));
-})();
-
-// Bishop image parallax
-(function() {
-  const image = document.querySelector('.bishop-parallax');
-  if (!image) return;
-
-  function updateParallax() {
-    const rect = image.getBoundingClientRect();
-    const vh = window.innerHeight || document.documentElement.clientHeight;
-    const progress = (vh - rect.top) / (vh + rect.height);
-    const y = (progress - 0.5) * 34;
-    image.style.transform = `scale(1.08) translateY(${y.toFixed(2)}px)`;
-  }
-
-  window.addEventListener('scroll', updateParallax, { passive: true });
-  window.addEventListener('resize', updateParallax);
-  updateParallax();
-})();
-
-// Gallery river parallax
-(function() {
-  const cards = Array.from(document.querySelectorAll('.gallery-river__card'));
-  if (!cards.length) return;
-
-  let ticking = false;
-  function paint() {
-    const vh = window.innerHeight || document.documentElement.clientHeight;
-    cards.forEach((card) => {
-      const media = card.querySelector('.gallery-river__media');
-      if (!media) return;
-      const rect = card.getBoundingClientRect();
-      const depth = Number(card.style.getPropertyValue('--depth')) || 1;
-      const center = rect.top + rect.height / 2;
-      const delta = (center - vh / 2) / vh;
-      const y = delta * (8 + depth * 5);
-      media.style.transform = `translateY(${y.toFixed(2)}px)`;
-    });
-    ticking = false;
-  }
-
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    window.requestAnimationFrame(paint);
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-  onScroll();
-
-  // 3D tilt on pointer move inside a card
-  cards.forEach((card) => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      const rotateX = (y / rect.height) * 12;
-      const rotateY = (x / rect.width) * -12;
-      card.style.transform = `translateZ(0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    });
-
-    card.addEventListener('mouseleave', () => {
-      // reset transform - keep parallax depth if active
-      card.style.transform = '';
-    });
-  });
 })();
 
 // Gallery Lightbox
@@ -1068,11 +1020,13 @@ tickCountdowns();
     <div class="gallery-river">
       <?php foreach ($homeGallery as $index => $item): ?>
       <article class="gallery-river__card gallery-item scroll-reveal scroll-reveal--media" style="--depth: <?php echo (string) (($index % 3) + 1); ?>; --reveal-delay: <?php echo htmlspecialchars(number_format($index * 0.08, 2)); ?>s;">
-        <div class="gallery-river__media">
+        <div class="gallery-river__media parallax-scene">
           <img
             src="<?php echo htmlspecialchars($item['image']); ?>"
             alt="<?php echo htmlspecialchars($item['caption']); ?>"
-            class="gallery-river__img gallery-trigger"
+            class="gallery-river__img gallery-trigger parallax-layer"
+            data-parallax-speed="<?php echo htmlspecialchars(number_format(0.1 + (($index % 3) * 0.03), 2, '.', '')); ?>"
+            style="--parallax-scale: 1.12;"
             tabindex="0"
             role="button"
             data-gallery-index="<?php echo $index; ?>"

@@ -226,14 +226,24 @@ ALTER TABLE donations
 CREATE TABLE IF NOT EXISTS public_messages (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NULL,
+  guest_token CHAR(64) NULL,
   name VARCHAR(120) NULL,
   email VARCHAR(180) NULL,
   type ENUM('chat','reply','broadcast') NOT NULL DEFAULT 'chat',
   message TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  admin_seen_at DATETIME NULL,
   INDEX idx_public_messages_type (type),
-  INDEX idx_public_messages_user_id (user_id)
+  INDEX idx_public_messages_user_id (user_id),
+  INDEX idx_public_messages_guest_token (guest_token),
+  INDEX idx_public_messages_admin_seen_at (admin_seen_at)
 );
+
+ALTER TABLE public_messages
+  ADD COLUMN IF NOT EXISTS guest_token CHAR(64) NULL AFTER user_id;
+
+ALTER TABLE public_messages
+  ADD COLUMN IF NOT EXISTS admin_seen_at DATETIME NULL AFTER created_at;
 
 CREATE TABLE IF NOT EXISTS blog_posts (
   id INT AUTO_INCREMENT PRIMARY KEY,

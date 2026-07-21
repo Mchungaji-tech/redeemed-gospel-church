@@ -2,6 +2,7 @@
 $u = $_SESSION['user'] ?? [];
 $role = $u['role'] ?? '';
 $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '';
+$unreadChatThreads = function_exists('rgcCountUnreadPublicChatThreads') ? rgcCountUnreadPublicChatThreads() : 0;
 
 function rgcNavClasses(string $href, string $currentPath): string {
   $active = str_ends_with($currentPath, $href);
@@ -85,6 +86,13 @@ function rgcNavClasses(string $href, string $currentPath): string {
     <a href="<?php echo rgcUrl('admin/prayer_requests.php'); ?>" class="<?php echo rgcNavClasses('/admin/prayer_requests.php', $currentPath); ?>">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4l-4 4v-4z"/></svg>
       Prayer Inbox
+    </a>
+    <a href="<?php echo rgcUrl('admin/messaging.php'); ?>" class="<?php echo rgcNavClasses('/admin/messaging.php', $currentPath); ?>">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h7m-9 8l-4-4V6a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H7z"/></svg>
+      Messaging
+      <?php if ($unreadChatThreads > 0): ?>
+        <span class="ml-1 inline-flex min-w-[1.45rem] items-center justify-center rounded-full bg-rose-500 px-1.5 py-0.5 text-[10px] font-bold text-white"><?php echo $unreadChatThreads > 99 ? '99+' : $unreadChatThreads; ?></span>
+      <?php endif; ?>
     </a>
     <a href="<?php echo rgcUrl('admin/blog.php'); ?>" class="<?php echo rgcNavClasses('/admin/blog.php', $currentPath); ?>">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H8a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v14a2 2 0 01-2 2zM16 3v4h4M9 9h6M9 13h6M9 17h6"/></svg>
