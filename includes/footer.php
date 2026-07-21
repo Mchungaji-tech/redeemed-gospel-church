@@ -107,7 +107,6 @@ $footerData = rgcLoadJson('footer.json', [
 
   const page = body.dataset.page || '';
   const isTouch = window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches;
-  const allowReverseMotion = !isTouch;
   if (isTouch) {
     body.classList.add('touch-device');
   }
@@ -252,19 +251,14 @@ $footerData = rgcLoadJson('footer.json', [
     return;
   }
 
-  let lastScrollY = window.pageYOffset || window.scrollY || 0;
-  let scrollDirection = 'down';
-
-  window.addEventListener('scroll', () => {
-    const currentY = window.pageYOffset || window.scrollY || 0;
-    scrollDirection = currentY > lastScrollY ? 'down' : 'up';
-    lastScrollY = currentY;
-  }, { passive: true });
-
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      entry.target.classList.toggle('scroll-reveal--reverse', allowReverseMotion && scrollDirection === 'up');
-      entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      if (!entry.isIntersecting) {
+        return;
+      }
+
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
     });
   }, {
     threshold: 0.12,

@@ -746,7 +746,6 @@ tickCountdowns();
 (function() {
   const revealItems = document.querySelectorAll('.scroll-reveal');
   if (!revealItems.length) return;
-  const allowReverseMotion = !(window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches);
 
   revealItems.forEach((item) => item.classList.add('reveal-ready'));
 
@@ -755,19 +754,14 @@ tickCountdowns();
     return;
   }
 
-  let lastScrollY = window.pageYOffset || window.scrollY || 0;
-  let scrollDirection = 'down';
-
-  window.addEventListener('scroll', () => {
-    const currentY = window.pageYOffset || window.scrollY || 0;
-    scrollDirection = currentY > lastScrollY ? 'down' : 'up';
-    lastScrollY = currentY;
-  }, { passive: true });
-
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      entry.target.classList.toggle('scroll-reveal--reverse', allowReverseMotion && scrollDirection === 'up');
-      entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      if (!entry.isIntersecting) {
+        return;
+      }
+
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
     });
   }, {
     threshold: 0.12,
